@@ -58,7 +58,6 @@ TEST(ShiftRegisterDriverTests, OnIntialization_OutputEnableIsDrivenLow)
     shiftRegPort.Data = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b11110111, shiftRegPort.Data, 0b00001000);
     BITS_EQUAL(0b11110111, shiftRegPort.Data, 0x08);
     // it would be far nicer to have bool shiftRegister.OutputEnabled()
 }
@@ -69,8 +68,7 @@ TEST(ShiftRegisterDriverTests, OnInitialization_ClearIsDrivenHigh)
     shiftRegPort.Data = 0x00;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b000000001, shiftRegPort.Data, 0b000000001);
-    BITS_EQUAL(0b000000001, shiftRegPort.Data, 0x01);
+    BITS_EQUAL(0x1, shiftRegPort.Data, 0x01);
 }
 
 TEST(ShiftRegisterDriverTests, OnInitialization_ClockIsDrivenLow)
