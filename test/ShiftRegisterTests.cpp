@@ -18,9 +18,6 @@
 //      CLK   - B1
 //      CLR   - B0  
 
-// Output Enable Pin is pulled low on initalization
-// Clear pin is pulled high on initialization
-// Clock is pulled low on initalization
 // Latch is pulled low before shifting bits out
 // Latch is pulled high after data is shifted out
 
