@@ -34,7 +34,7 @@ TEST(ShiftRegisterDriverTests, OnInitialization_PinsSetupAsOutput)
     shiftRegPort.Direction = 0x00;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BYTES_EQUAL(0b00011111, shiftRegPort.Direction);
+    BITS_EQUAL(0b00011111, shiftRegPort.Direction, 0xFF);
 }
 
 TEST(ShiftRegisterDriverTests, OnInitalization_DirectionFor_PinsFiveSixAndSeven_AreNotModified)
@@ -43,7 +43,7 @@ TEST(ShiftRegisterDriverTests, OnInitalization_DirectionFor_PinsFiveSixAndSeven_
     shiftRegPort.Direction = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BYTES_EQUAL(0xFF, shiftRegPort.Direction);
+    BITS_EQUAL(0b11100000, shiftRegPort.Direction, 0b11100000);
 }
 
 TEST(ShiftRegisterDriverTests, OnInitalization_DataOn_PinsFiveSixAndSeven_IsNotModified)
@@ -52,8 +52,7 @@ TEST(ShiftRegisterDriverTests, OnInitalization_DataOn_PinsFiveSixAndSeven_IsNotM
     shiftRegPort.Data = 0x00;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b00011101, shiftRegPort.Data, 0xFF);
-    BYTES_EQUAL(0b00011101, shiftRegPort.Data);
+    BITS_EQUAL(0b00011111, shiftRegPort.Data, 0b11100000);
 }
 
 TEST(ShiftRegisterDriverTests, OnIntialization_OutputEnableIsDrivenLow)
@@ -62,9 +61,28 @@ TEST(ShiftRegisterDriverTests, OnIntialization_OutputEnableIsDrivenLow)
     shiftRegPort.Data = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b11111101, shiftRegPort.Data, 0xFF);
-    BYTES_EQUAL(0b11111101, shiftRegPort.Data);
+    BITS_EQUAL(0b11110111, shiftRegPort.Data, 0b00001000);
+    BITS_EQUAL(0b11110111, shiftRegPort.Data, 0x08);
     // it would be far nicer to have bool shiftRegister.OutputEnabled()
+}
+
+TEST(ShiftRegisterDriverTests, OnInitialization_ClearIsDrivenHigh)
+{
+    IOPort_t shiftRegPort;
+    shiftRegPort.Data = 0x00;
+    ShiftRegister shiftRegister(shiftRegPort);
+
+    BITS_EQUAL(0b000000001, shiftRegPort.Data, 0b000000001);
+    BITS_EQUAL(0b000000001, shiftRegPort.Data, 0x01);
+}
+
+TEST(ShiftRegisterDriverTests, OnInitialization_ClockIsDrivenLow)
+{
+    IOPort_t shiftRegPort;
+    shiftRegPort.Data = 0x00;
+    ShiftRegister shiftRegister(shiftRegPort);
+
+    BITS_EQUAL(0x00, shiftRegPort.Data, 0x02);
 }
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
