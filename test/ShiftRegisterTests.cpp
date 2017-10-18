@@ -79,10 +79,19 @@ TEST(ShiftRegisterDriverTests, OnInitialization_ClearIsDrivenHigh)
 TEST(ShiftRegisterDriverTests, OnInitialization_ClockIsDrivenLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0x00;
+    shiftRegPort.Data = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
     BITS_EQUAL(0x00, shiftRegPort.Data, 0x02);
+}
+
+TEST(ShiftRegisterDriverTests, OnInitialization_LatchIsDrivenLow)
+{
+    IOPort_t shiftRegPort;
+    shiftRegPort.Data = 0xFF;
+    ShiftRegister shiftRegister(shiftRegPort);
+
+    BITS_EQUAL(0x00, shiftRegPort.Data, 0x04);
 }
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
