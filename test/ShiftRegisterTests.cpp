@@ -59,7 +59,6 @@ TEST(ShiftRegisterDriverTests, OnInitalization_DataOn_PinsFiveSixAndSeven_IsNotM
 TEST(ShiftRegisterDriverTests, OnIntialization_OutputEnableIsDrivenLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Direction = 0x00;
     shiftRegPort.Data = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
