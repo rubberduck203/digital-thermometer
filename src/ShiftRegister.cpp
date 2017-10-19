@@ -14,7 +14,10 @@ const uint8_t latchPin = 2;
 const uint8_t clockPin = 1;
 const uint8_t clearPin = 0;
 
-ShiftRegister::ShiftRegister(IOPort_t& port)
+const uint8_t clockPinMask = (1 << clockPin);
+const uint8_t dataPinMask = (1 << dataPin);
+
+ShiftRegister::ShiftRegister(IOPort_t& port) : port(port)
 {
     port.Direction |= registerMask; //set 0-4 to output
 
@@ -25,4 +28,21 @@ ShiftRegister::ShiftRegister(IOPort_t& port)
 void ShiftRegister::writeByte(uint8_t data)
 {
 
+}
+
+void ShiftRegister::writeBit(uint8_t value)
+{
+    if (0 == value)
+    {
+        port.Data &= ~dataPinMask;
+    }
+    else
+    {
+        port.Data |= dataPinMask;
+    }
+
+    // clock data into shift register
+    port.Data |= clockPinMask;
+    // pull clock low again
+    port.Data &= ~clockPinMask;
 }

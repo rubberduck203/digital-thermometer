@@ -89,10 +89,60 @@ TEST(ShiftRegisterDriverTests, OnInitialization_LatchIsDrivenLow)
     BITS_EQUAL(0x00, shiftRegPort.Data, 0x04);
 }
 
+const int dataPinMask = 0x10;
+const int clockPinMask = 0x02;
+
+TEST(ShiftRegisterDriverTests, ShiftHighOut)
+{
+    IOPort_t shiftRegPort;
+    ShiftRegister shiftRegister(shiftRegPort);
+    shiftRegPort.Data = 0x00; //don't ever set this directly like this in prod. Just setting up the test.
+    BITS_EQUAL(0x00, shiftRegPort.Data, dataPinMask);
+    shiftRegister.writeBit(1);
+    BITS_EQUAL(0xFF, shiftRegPort.Data, dataPinMask);
+
+    //verify we haven't messed with other pins
+    BITS_EQUAL(0x00, shiftRegPort.Data, ~dataPinMask);
+}
+
+TEST(ShiftRegisterDriverTests, ShiftLowOut)
+{
+    IOPort_t shiftRegPort;
+    ShiftRegister shiftRegister(shiftRegPort);
+    shiftRegPort.Data = 0xFF; //don't ever set this directly like this in prod. Just setting up the test.
+    BITS_EQUAL(0xFF, shiftRegPort.Data, dataPinMask);
+    shiftRegister.writeBit(0);
+    BITS_EQUAL(0x00, shiftRegPort.Data, dataPinMask);
+
+    //verify we haven't messed with other pins (except clock pin)
+    BITS_EQUAL(0xFF, shiftRegPort.Data, ~dataPinMask & ~clockPinMask);
+}
+
+TEST(ShiftRegisterDriverTests, AfterShiftBitOut_ClockIsLow)
+{
+    // So, I don't know how to test that the clock went high, then low
+    // before the writeBit() method exits. 
+    // So, I wrote the test, added the write high, which broke it, then added the write low.
+    // Not exactly ideal....
+    IOPort_t shiftRegPort;
+    shiftRegPort.Data = 0xFF;
+    ShiftRegister shiftRegister(shiftRegPort);
+    shiftRegister.writeBit(1);
+
+    BITS_EQUAL(0x00, shiftRegPort.Data, clockPinMask);
+}
+
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
 {
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.writeByte(0x01);
     //BYTE_EQUALS(0X01, ?How to spy?)
+    // for each bit in byte
+    //  datapin set high/low accordingly
+    //  then clock pin pulsed
+    // I have no idea how to test this besides verifying the final state 
+    //  and that we've not mucked with other pins.
+
+
 }
