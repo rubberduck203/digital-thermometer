@@ -62,3 +62,9 @@ void ShiftRegister::writeBit(uint8_t value)
     // If things are wonky, add a microsecond delay before driving clock pin high
     // and again before driving it low again. 
 }
+
+void ShiftRegister::latch()
+{
+    port.Data |= latchPinMask;
+    port.Data &= ~latchPinMask;
+}

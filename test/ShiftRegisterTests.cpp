@@ -89,8 +89,9 @@ TEST(ShiftRegisterDriverTests, OnInitialization_LatchIsDrivenLow)
     BITS_EQUAL(0x00, shiftRegPort.Data, 0x04);
 }
 
-const int dataPinMask = 0x10;
 const int clockPinMask = 0x02;
+const int latchPinMask = 0x04;
+const int dataPinMask = 0x10;
 
 TEST(ShiftRegisterDriverTests, ShiftHighOut)
 {
@@ -130,6 +131,21 @@ TEST(ShiftRegisterDriverTests, AfterShiftBitOut_ClockIsLow)
     shiftRegister.writeBit(1);
 
     BITS_EQUAL(0x00, shiftRegPort.Data, clockPinMask);
+}
+
+TEST(ShiftRegisterDriverTests, AfterLatch_LatchIsLow)
+{
+    IOPort_t shiftRegPort;
+    shiftRegPort.Data = 0xFF;
+    ShiftRegister shiftRegister(shiftRegPort);
+    shiftRegister.latch();
+
+    BITS_EQUAL(0x00, shiftRegPort.Data, latchPinMask);
+}
+
+IGNORE_TEST(ShiftRegisterDriverTests, AfterLatch_NoOtherPinsHaveBeenModified)
+{
+    
 }
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
