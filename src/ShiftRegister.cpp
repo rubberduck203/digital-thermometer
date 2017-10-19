@@ -52,19 +52,23 @@ void ShiftRegister::writeBit(uint8_t value)
         port.Data |= dataPinMask;
     }
 
-    // clock data into shift register
-    port.Data |= clockPinMask;
-    // pull clock low again
-    port.Data &= ~clockPinMask;
+    pulse(clockPinMask);
+}
+
+void ShiftRegister::latch()
+{
+    pulse(latchPinMask);
+}
+
+void ShiftRegister::pulse(uint8_t bitmask)
+{
+    // pull the pin high to clock the data, 
+    // then back to low so we choose when to send it.
+    port.Data |= bitmask;
+    port.Data &= ~bitmask;
 
     // Hoping the tens of nanoseconds timing requirements are met here.
     // I haven't quite figured out how long it takes to do a digital write to GPIO.
     // If things are wonky, add a microsecond delay before driving clock pin high
     // and again before driving it low again. 
-}
-
-void ShiftRegister::latch()
-{
-    port.Data |= latchPinMask;
-    port.Data &= ~latchPinMask;
 }

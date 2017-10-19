@@ -10,6 +10,7 @@ class ShiftRegister
 {
 private:
     IOPort_t& port;
+    void pulse(uint8_t bitmask);
 public:
     ShiftRegister(IOPort_t& port);
     void writeByte(uint8_t data);
