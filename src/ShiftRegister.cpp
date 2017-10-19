@@ -30,16 +30,12 @@ ShiftRegister::ShiftRegister(IOPort_t& port) : port(port)
 void ShiftRegister::writeByte(uint8_t data)
 {
     /* 
-    * The double negate turns non-zero into a one.
-    * There's no real need for it so long as the implementation of writeBit() remains unchanged 
-    * but we'll keep this just in case because there aren't really tests around this.
+    * Right shift the data bit we're interested in into the right most bit we're interested in.
+    * ANDing with 1 gives us a HIGH/LOW value to write
     */ 
     for(uint8_t i = 0; i < 8; i++)
     {
-        //(n >> k) & 1
         writeBit((data >> i) & 1);
-        // uint8_t mask = 1 << i;
-        // writeBit(!!(data & mask));
     }
 }
 
