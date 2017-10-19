@@ -18,9 +18,6 @@
 //      CLK   - B1
 //      CLR   - B0  
 
-// Latch is pulled low before shifting bits out
-// Latch is pulled high after data is shifted out
-
 TEST_GROUP(ShiftRegisterDriverTests)
 {
 };
