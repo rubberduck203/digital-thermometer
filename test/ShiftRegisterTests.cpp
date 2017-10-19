@@ -143,9 +143,13 @@ TEST(ShiftRegisterDriverTests, AfterLatch_LatchIsLow)
     BITS_EQUAL(0x00, shiftRegPort.Data, latchPinMask);
 }
 
-IGNORE_TEST(ShiftRegisterDriverTests, AfterLatch_NoOtherPinsHaveBeenModified)
+TEST(ShiftRegisterDriverTests, AfterLatch_NoOtherPinsHaveBeenModified)
 {
-    
+    IOPort_t shiftRegPort;
+    ShiftRegister shiftRegister(shiftRegPort);
+    shiftRegPort.Data = 0xFF;
+    shiftRegister.latch();
+    BITS_EQUAL(0xFF, shiftRegPort.Data, ~latchPinMask);
 }
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
