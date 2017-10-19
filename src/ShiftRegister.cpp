@@ -16,12 +16,14 @@ const uint8_t clearPin = 0;
 
 const uint8_t clockPinMask = (1 << clockPin);
 const uint8_t dataPinMask = (1 << dataPin);
+const uint8_t outputEnablePinMask = (1 << outputEnablePin);
+const uint8_t latchPinMask = (1 << latchPin);
 
 ShiftRegister::ShiftRegister(IOPort_t& port) : port(port)
 {
     port.Direction |= registerMask; //set 0-4 to output
 
-    uint8_t lowPins = (1 << outputEnablePin) | (1 << clockPin) | (1 << latchPin);
+    uint8_t lowPins = outputEnablePinMask | clockPinMask | latchPinMask;
     port.Data = (port.Data & ~registerMask) | (registerMask & ~lowPins);
 }
 
