@@ -47,4 +47,9 @@ void ShiftRegister::writeBit(uint8_t value)
     port.Data |= clockPinMask;
     // pull clock low again
     port.Data &= ~clockPinMask;
+
+    // Hoping the tens of nanoseconds timing requirements are met here.
+    // I haven't quite figured out how long it takes to do a digital write to GPIO.
+    // If things are wonky, add a microsecond delay before driving clock pin high
+    // and again before driving it low again. 
 }
