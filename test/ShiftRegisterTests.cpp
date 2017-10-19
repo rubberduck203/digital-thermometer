@@ -123,7 +123,7 @@ TEST(ShiftRegisterDriverTests, AfterShiftBitOut_ClockIsLow)
     // So, I don't know how to test that the clock went high, then low
     // before the writeBit() method exits. 
     // So, I wrote the test, added the write high, which broke it, then added the write low.
-    // Not exactly ideal....
+    // Not exactly ideal, but the functionality was verified once and other tests broke when I did it.
     IOPort_t shiftRegPort;
     shiftRegPort.Data = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
@@ -138,11 +138,7 @@ IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.writeByte(0x01);
     //BYTE_EQUALS(0X01, ?How to spy?)
-    // for each bit in byte
-    //  datapin set high/low accordingly
-    //  then clock pin pulsed
+    // for each bit in byte write bit.
     // I have no idea how to test this besides verifying the final state 
     //  and that we've not mucked with other pins.
-
-
 }

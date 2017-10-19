@@ -29,7 +29,16 @@ ShiftRegister::ShiftRegister(IOPort_t& port) : port(port)
 
 void ShiftRegister::writeByte(uint8_t data)
 {
-
+    /* 
+    * The double negate turns non-zero into a one.
+    * There's no real need for it so long as the implementation of writeBit() remains unchanged 
+    * but we'll keep this just in case because there aren't really tests around this.
+    */ 
+    for(uint8_t i = 0; i < 8; i++)
+    {
+        uint8_t mask = 1 << i;
+        writeBit(!!(data & mask));
+    }
 }
 
 void ShiftRegister::writeBit(uint8_t value)
