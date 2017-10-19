@@ -1,11 +1,11 @@
 #include "ShiftRegister.h"
 
 // Five Pins setup for output (pins B0-B4; arduino D8-D12)
-//      Data  - B4
-//      OE    - B3
-//      Latch - B2
-//      CLK   - B1
-//      CLR   - B0  
+//      Data  - B4 - D12
+//      OE    - B3 - D11
+//      Latch - B2 - D10
+//      CLK   - B1 - D09
+//      CLR   - B0 - D08
 
 const uint8_t registerMask = 0b00011111;
 const uint8_t dataPin = 4;
@@ -36,8 +36,10 @@ void ShiftRegister::writeByte(uint8_t data)
     */ 
     for(uint8_t i = 0; i < 8; i++)
     {
-        uint8_t mask = 1 << i;
-        writeBit(!!(data & mask));
+        //(n >> k) & 1
+        writeBit((data >> i) & 1);
+        // uint8_t mask = 1 << i;
+        // writeBit(!!(data & mask));
     }
 }
 

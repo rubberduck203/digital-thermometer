@@ -2,6 +2,7 @@
 #define _AVR_IO_H_
 
 #include <stdint.h>
+#include "../../src/ShiftRegister.h"
 
 // #define PINB _SFR_IO8(0x03)
 // #define PINB0 0
@@ -22,5 +23,8 @@
 // #define DDB5 5
 // #define DDB6 6
 // #define DDB7 7
+
+extern IOPort_t fakePort;
+#define DDRB fakePort
 
 #endif

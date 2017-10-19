@@ -1,10 +1,13 @@
+#ifndef _SHIFT_REG_H_
+#define _SHIFT_REG_H_
+
 #include <stdint.h>
 
 struct IOPort_t
 {
-    uint8_t Direction;
-    uint8_t Data;
-} ;
+    volatile uint8_t Direction;
+    volatile uint8_t Data;
+};
 
 class ShiftRegister
 {
@@ -17,3 +20,5 @@ public:
     void writeBit(uint8_t value);
     void latch();
 };
+
+#endif
