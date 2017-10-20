@@ -153,9 +153,11 @@ IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
 {
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
-    shiftRegister.writeByte(0x01);
+    shiftRegister.writeByte(0x05);
     //BYTE_EQUALS(0X01, ?How to spy?)
     // for each bit in byte write bit.
     // I have no idea how to test this besides verifying the final state 
     //  and that we've not mucked with other pins.
+    // How can I verify that a bit pattern of 1-0-1-0-0-0-0-0 was shifted into the register?! UGH!
+    // 
 }

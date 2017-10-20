@@ -32,8 +32,11 @@ void ShiftRegister::writeByte(uint8_t data)
     /* 
     * Right shift the data bit we're interested in into the right most bit we're interested in.
     * ANDing with 1 gives us a HIGH/LOW value to write
+    * Loop backwards to shift the most significant bit in first.
+    * Using a signed integer is intentional. 
+    * Using unsigned results in an infinite loop.
     */ 
-    for(uint8_t i = 0; i < 8; i++)
+    for(int8_t i = 7; i >= 0; i--)
     {
         writeBit((data >> i) & 1);
     }
