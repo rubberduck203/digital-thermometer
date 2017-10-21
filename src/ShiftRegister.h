@@ -16,7 +16,7 @@ private:
     void pulse(uint8_t bitmask);
 public:
     ShiftRegister(IOPort_t& port);
-    void writeByte(uint8_t data);
+    virtual void writeByte(uint8_t data);
     void writeBit(uint8_t value);
     void latch();
 };
