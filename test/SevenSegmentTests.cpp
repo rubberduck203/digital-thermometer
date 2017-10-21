@@ -41,7 +41,7 @@ TEST(SevenSegDriverTests, Zero)
     expectByteWritten(shiftRegister, ~0x3F);
 
     SevenSegment sevenSeg(shiftRegister);
-    sevenSeg.display('0');
+    sevenSeg.write('0');
 }
 
 TEST(SevenSegDriverTests, One)
@@ -50,7 +50,7 @@ TEST(SevenSegDriverTests, One)
     expectByteWritten(shiftRegister, ~0x06);
 
     SevenSegment sevenSeg(shiftRegister);
-    sevenSeg.display('1');
+    sevenSeg.write('1');
 }
 
 IGNORE_TEST(SevenSegDriverTests, unsupportedCharacter)

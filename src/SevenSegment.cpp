@@ -4,11 +4,11 @@
 #include "ShiftRegister.h"
 
 SevenSegment::SevenSegment(ShiftRegister& shiftRegister) : shiftRegister(shiftRegister)
-{
-    
+{ 
+
 }
 
-void SevenSegment::display(uint8_t character)
+void SevenSegment::write(uint8_t character)
 {
     // We're using common cathode, so writing low activates the led.
     // Values are calculated using common annode though, so we NOT everything.
