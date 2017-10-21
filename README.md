@@ -7,6 +7,14 @@ but will be moving this over to an ATTiny84 for the final board.
 The board consists of 3 common cathode 7-segment displays, 3 shift registers, 
 and a MAX31820 one-wire temperature sensor.
 
+## Board Design
+
+### Bill of Materials
+TODO:
+
+### Layout
+TODO: 
+
 ## Code Design
 
 - Main initializes the application then delegates to the Controller.
