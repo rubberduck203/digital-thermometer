@@ -59,6 +59,105 @@ TEST(SevenSegDriverTests, One)
     sevenSeg.write('1');
 }
 
+TEST(SevenSegDriverTests, Two)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x5B);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('2');
+}
+
+TEST(SevenSegDriverTests, Three)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x4F);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('3');
+}
+
+TEST(SevenSegDriverTests, Four)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x66);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('4');
+}
+
+TEST(SevenSegDriverTests, Five)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x6D);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('5');
+}
+
+TEST(SevenSegDriverTests, Six)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x7D);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('6');
+}
+
+TEST(SevenSegDriverTests, Seven)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x07);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('7');
+}
+
+TEST(SevenSegDriverTests, Eight)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x7F);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('8');
+}
+
+TEST(SevenSegDriverTests, Nine)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, ~0x6F);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('9');
+}
+
+TEST(SevenSegDriverTests, DegreesCelcius)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, (unsigned char)~0x8F);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('C');
+}
+
+TEST(SevenSegDriverTests, DegreesFarenheit)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, (unsigned char)~0xCE);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('F');
+}
+
+IGNORE_TEST(SevenSegDriverTests, unsupportedCharacterTurnsSegmentOff)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, (unsigned char)0xFF);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('Z');
+}
+
 TEST(SevenSegDriverTests, displayLatchesRegisters)
 {
     ShiftRegisterMock shiftRegister;
@@ -69,14 +168,4 @@ TEST(SevenSegDriverTests, displayLatchesRegisters)
     sevenSeg.display();
 }
 
-IGNORE_TEST(SevenSegDriverTests, unsupportedCharacter)
-{
 
-}
-
-// Driven by 3 shift registers.
-// 3 bytes of data is shifted out
-
-// First shift register is the 10s digit (last byte shifted in)
-// Second shift register is the 1s digit (second byte shifted in)
-// Third (last) shift register is the inverted display for °C/°F
