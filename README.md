@@ -11,6 +11,7 @@ and a MAX31820 one-wire temperature sensor.
 
 - Main initializes the application then delegates to the Controller.
 - Controller coordinates interactions between the components.
+- Display abstracts our 3 7-seg displays as a single display.
 - 7-Segment Driver defines character mappings and uses a Shift Register Driver to display them.
 - Shift Register Driver knows how to shift bits into the registers.
 - CFSwitch (°C/°F Switch) monitors switch state so we know if the user wants °C or °F displayed.
@@ -18,56 +19,28 @@ and a MAX31820 one-wire temperature sensor.
 - TempConverter converts °C to °F
 
 ```
-
-                      +------------+
-                      |            |
-                      |    Main    |
-                      |            |
-                      |            |
-                      +------------+
-                             |
-                             |
-    +----------+      +------v-----+   +-------------+
-    |          |      |            |   |             |
-    | 7-Seg    <------+ Controller +---> C/F Switch  |
-    |          |      |            |   |             |
-    |          |      |            +-+ |             |
-    +----------+      +------------+ | +-------------+
-         |                |          |
-         |                |          |
-    +----v-----+   +------v---+    +-v---------+
-    |          |   |          |    |           |
-    | Shift    |   | Temp     |    | Temp      |
-    | Register |   | Sensor   |    | Converter |
-    |          |   |          |    |           |
-    +----------+   +----------+    +-----------+
-
-```
-
-Another possible design.
-
-```
-                  +------------+
-                  |            |
-                  |    Main    |
-                  |            |
-                  |            |
-                  +------+-----+
-                         |
-                         |
-+----------+      +------v-----+     +-------------+      +--------------+
-|          |      |            |     |             |      |              |
-| 7-Seg    <------+ Controller +----->  Temp       +------> One Wire     |
-|          |      |            |     |  Sensor     |      | Driver       |
-|          |      |            |     |             |      |              |
-+----+-----+      +------------+     ++----------+-+      +--------------+
-     |                                |          |
-     |                                |          |
-+----v-----+              +-----------v+     +---v---------+
-|          |              |            |     |             |
-| Shift    |              |  C/F       |     | C/F Switch  |
-| Register |              |  Converter |     |             |
-|          |              |            |     |             |
-+----------+              +------------+     +-------------+
+                                   +------------+
+                                   |            |
+                                   |    Main    |
+                                   |            |
+                                   |            |
+                                   +------+-----+
+                                          |
+                                          |
++----------+       +----------+    +------v-----+     +-------------+      +--------------+
+|          |       |          |    |            |     |             |      |              |
+| 7-Seg    <-------+ Display  <----+ Controller +----->  Temp       +------> One Wire     |
+| Driver   |       |          |    |            |     |  Sensor     |      | Driver       |
+|          |       |          |    |            |     |             |      |              |
++----+-----+       +----------+    +---+-----+--+     +-------------+      +--------------+
+     |                                 |     |
+     |                            +----+     +----+
++----v-----+                      |               |
+|          |               +------v-----+     +---v---------+
+| Shift    |               |            |     |             |
+| Register |               |  C/F       |     | C/F Switch  |
+|          |               |  Converter |     |             |
++----------+               |            |     |             |
+                           +------------+     +-------------+
 
 ```
