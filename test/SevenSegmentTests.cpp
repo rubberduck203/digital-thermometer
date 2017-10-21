@@ -28,12 +28,17 @@ TEST_GROUP(SevenSegDriverTests)
     }
 };
 
+void expectByteWritten(ShiftRegister& shiftRegister, unsigned char value)
+{
+    mock().expectOneCall("writeByte")
+        .onObject(&shiftRegister)
+        .withParameter("data", (unsigned char)value);
+}
+
 TEST(SevenSegDriverTests, Zero)
 {
     ShiftRegisterMock shiftRegister;
-    mock().expectOneCall("writeByte")
-            .onObject(&shiftRegister)
-            .withParameter("data", (unsigned char)~0x3F);
+    expectByteWritten(shiftRegister, ~0x3F);
 
     SevenSegment sevenSeg(shiftRegister);
     sevenSeg.display('0');
@@ -42,9 +47,7 @@ TEST(SevenSegDriverTests, Zero)
 TEST(SevenSegDriverTests, One)
 {
     ShiftRegisterMock shiftRegister;
-    mock().expectOneCall("writeByte")
-            .onObject(&shiftRegister)
-            .withParameter("data", (unsigned char)~0x06);
+    expectByteWritten(shiftRegister, ~0x06);
 
     SevenSegment sevenSeg(shiftRegister);
     sevenSeg.display('1');
