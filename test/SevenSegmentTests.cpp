@@ -16,6 +16,12 @@ public:
                 .onObject(this)
                 .withUnsignedIntParameter("data", data);
     }
+
+    virtual void latch()
+    {
+        mock().actualCall("latch")
+                .onObject(this);
+    }
 };
 
 
@@ -53,12 +59,17 @@ TEST(SevenSegDriverTests, One)
     sevenSeg.write('1');
 }
 
-IGNORE_TEST(SevenSegDriverTests, unsupportedCharacter)
+TEST(SevenSegDriverTests, displayLatchesRegisters)
 {
+    ShiftRegisterMock shiftRegister;
+    mock().expectOneCall("latch")
+            .onObject(&shiftRegister);
 
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.display();
 }
 
-IGNORE_TEST(SevenSegDriverTests, displayLatchesRegisters)
+IGNORE_TEST(SevenSegDriverTests, unsupportedCharacter)
 {
 
 }

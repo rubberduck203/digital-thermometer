@@ -18,7 +18,7 @@ public:
     ShiftRegister(IOPort_t& port);
     virtual void writeByte(uint8_t data);
     void writeBit(uint8_t value);
-    void latch();
+    virtual void latch();
 };
 
 #endif

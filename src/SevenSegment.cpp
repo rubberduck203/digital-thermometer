@@ -26,3 +26,8 @@ void SevenSegment::write(uint8_t character)
 
     shiftRegister.writeByte(~data);
 }
+
+void SevenSegment::display()
+{
+    shiftRegister.latch();
+}

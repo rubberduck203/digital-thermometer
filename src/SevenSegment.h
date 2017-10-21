@@ -11,6 +11,7 @@ private:
 public:
     SevenSegment(ShiftRegister& shiftRegister);
     void write(uint8_t character);
+    void display();
 };
 
 #endif
