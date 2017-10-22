@@ -53,7 +53,7 @@ void SevenSegment::write(uint8_t character)
             data = 0xCE;
             break;
         default:
-            data = 0xFF; // turn the segment off if we get an unsupported char
+            data = 0x00; // turn the segment off if we get an unsupported char
     }
 
     shiftRegister.writeByte(~data);
