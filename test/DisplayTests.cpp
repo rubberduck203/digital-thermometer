@@ -44,8 +44,8 @@ public:
 
 | BIT | 15 | 14 | 13 | 12 | 11 | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
 | --- | -- | -- | -- | -- | -- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|     |  S |  S |  S |  S |  S | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 | 2^-1| 2^-2| 2^-3| 2^-4| 
-
+|Value|  S |  S |  S |  S |  S | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 | 2^-1| 2^-2| 2^-3| 2^-4| 
+ 
 | TEMPERATURE (°C) | DIGITAL OUTPUT (BINARY) | DIGITAL OUTPUT (HEX) |
 | ---------------- | ----------------------- | -------------------- |
 | +125             | 0000 0111 1101 0000     | 07D0h                |
@@ -169,16 +169,6 @@ TEST(DisplayTests, roundDownFromLessThanHalf)
     display.write(0x00C7, SevenSegmentDisplay::Celcius);
 }
 
-IGNORE_TEST(DisplayTests, ThreeDigits)
-{
-    FAIL("BOOM!");
-}
-
-IGNORE_TEST(DisplayTests, NegativeTemps)
-{
-    FAIL("BOOM!");
-}
-
 TEST(DisplayTests, Farenheit)
 {
     SevenSegmentMock driver;
@@ -203,4 +193,32 @@ TEST(DisplayTests, NineBitResolution)
 
     SevenSegmentDisplay display(driver);
     display.write(0x01B0, SevenSegmentDisplay::Farenheit);
+}
+
+TEST(DisplayTests, SingleDigitNegativeTemps)
+{
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, 'F');
+    expectWrite(driver, '4');
+    expectWrite(driver, '-');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    // -4F
+    display.write(0xFFC0, SevenSegmentDisplay::Farenheit);
+}
+
+IGNORE_TEST(DisplayTests, DoubleDigitNegativeTemps)
+{
+    //| -25.0625         | 1111 1110 0110 1111     | FE6Fh     
+    // -25
+}
+
+IGNORE_TEST(DisplayTests, ThreeDigits)
+{
+    // This might require us to make some changes to the driver.
+    // How to handle 3 digit temps? Leverage the decimal points?
+    // Or maybe we just shift the °C/°F indicator off the display?
+    FAIL("BOOM!");
 }
