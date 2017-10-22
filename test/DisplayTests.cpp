@@ -179,7 +179,28 @@ IGNORE_TEST(DisplayTests, NegativeTemps)
     FAIL("BOOM!");
 }
 
-IGNORE_TEST(DisplayTests, Farenheit)
+TEST(DisplayTests, Farenheit)
 {
-    FAIL("BOOM!");
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, 'F');
+    expectWrite(driver, '1');
+    expectWrite(driver, '2');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x00C0, SevenSegmentDisplay::Farenheit);
+}
+
+TEST(DisplayTests, NineBitResolution)
+{
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, 'F');
+    expectWrite(driver, '7');
+    expectWrite(driver, '2');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x01B0, SevenSegmentDisplay::Farenheit);
 }
