@@ -40,9 +40,14 @@ SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 
 void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 {
+    const int8_t scalingFactor = 4;
     const int8_t asciiNumberOffset = 48;
-
-    uint8_t decimal = (temp >> 4);
+    
+    // printf("\n%X", temp);
+    // float actual = (float)temp / 16; // R = F/(2^f); Real = Fixed / (2^fractional bits)
+    // printf("\n%f", actual);
+    uint8_t rounded = (1 << (scalingFactor - 1)) + temp;
+    uint8_t decimal = (rounded >> scalingFactor); //Truncate fractional (div by 2^4)
     uint8_t ones = (decimal % 10);
     uint8_t tens = (decimal - ones) / 10;
 

@@ -129,3 +129,57 @@ TEST(DisplayTests, displayCelciusTwoDigitNumber)
     SevenSegmentDisplay display(driver);
     display.write(0x00A0, SevenSegmentDisplay::Celcius);
 }
+
+TEST(DisplayTests, displayCelciusTwoDigitNumberWithNonZeroOnesDigit)
+{
+    SevenSegmentMock driver;
+
+    expectCelciusWritten(driver);
+    expectWrite(driver, '2');
+    expectWrite(driver, '1');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x00C0, SevenSegmentDisplay::Celcius);
+}
+
+TEST(DisplayTests, roundUpFromHalf)
+{
+    SevenSegmentMock driver;
+    
+    expectCelciusWritten(driver);
+    expectWrite(driver, '1');
+    expectWrite(driver, '3');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x00C8, SevenSegmentDisplay::Celcius);
+}
+
+TEST(DisplayTests, roundDownFromLessThanHalf)
+{
+    SevenSegmentMock driver;
+    
+    expectCelciusWritten(driver);
+    expectWrite(driver, '1');
+    expectWrite(driver, '2');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x00C7, SevenSegmentDisplay::Celcius);
+}
+
+IGNORE_TEST(DisplayTests, ThreeDigits)
+{
+    FAIL("BOOM!");
+}
+
+IGNORE_TEST(DisplayTests, NegativeTemps)
+{
+    FAIL("BOOM!");
+}
+
+IGNORE_TEST(DisplayTests, Farenheit)
+{
+    FAIL("BOOM!");
+}
