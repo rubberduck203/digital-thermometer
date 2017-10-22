@@ -49,19 +49,14 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 
     uint8_t character = (Celcius == scale) ? 'C' : 'F';
 
+    uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
+    int8_t decimal = (rounded >> scalingFactor);         //Truncate fractional (div by 2^4)
+
     bool negative = (temp >> 15);
     // printf("\n%s", negative ? "true" : "false");
-
     if (negative)
     {
-        // SSSS S111 1100 .0000 -4
-        // 1111 1111 1100 .0000
-        uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
-        int8_t decimal = (rounded >> scalingFactor);         //Truncate fractional (div by 2^4)
-        // printf("\n%f", decimal);
-        // printf("\n%X", decimal);
         uint8_t ones = ((decimal * -1) % 10); // -4 mod 10 = 6 ... we need the abs value here.
-        // printf("\n%i", ones);
         //uint8_t tens = (decimal + ones) / 10;
 
         driver.write(character);
@@ -70,8 +65,6 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     }
     else 
     {    
-        uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
-        int16_t decimal = (rounded >> scalingFactor);         //Truncate fractional (div by 2^4)
         uint8_t ones = (decimal % 10);
         uint8_t tens = (decimal - ones) / 10;
 
