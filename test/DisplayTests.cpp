@@ -59,6 +59,13 @@ public:
 | -25.0625         | 1111 1110 0110 1111     | FE6Fh                |
 | -55              | 1111 1100 1001 0000     | FC90h                |
 */
+
+void expectDisplayed(SevenSegment& driver)
+{
+    mock().expectOneCall("display")
+        .onObject(&driver);
+}
+
 TEST(DisplayTests, displayCelciusZero)
 {
     SevenSegmentMock driver;
@@ -71,8 +78,7 @@ TEST(DisplayTests, displayCelciusZero)
             .onObject(&driver)
             .withParameter("character", (unsigned char)'0');
 
-    mock().expectOneCall("display")
-            .onObject(&driver);
+    expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
     display.write(0x0000, SevenSegmentDisplay::Celcius);
@@ -94,8 +100,7 @@ TEST(DisplayTests, displayCelciusOne)
             .onObject(&driver)
             .withParameter("character", (unsigned char)'0');
 
-    mock().expectOneCall("display")
-            .onObject(&driver);
+    expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
     display.write(0x0010, SevenSegmentDisplay::Celcius);
@@ -117,8 +122,7 @@ TEST(DisplayTests, displayCelciusFive)
             .onObject(&driver)
             .withParameter("character", (unsigned char)'0');
 
-    mock().expectOneCall("display")
-            .onObject(&driver);
+    expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
     display.write(0x0050, SevenSegmentDisplay::Celcius);
