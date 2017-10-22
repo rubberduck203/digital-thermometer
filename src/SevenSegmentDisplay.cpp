@@ -63,8 +63,8 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
         if (0 == tens)
         {
             driver.write(character);
-            driver.write(ones + asciiNumberOffset); // 10^0 
-            driver.write('-'); // 10^1
+            driver.write(ones + asciiNumberOffset); 
+            driver.write('-'); 
         }
         else{
             driver.write(ones + asciiNumberOffset);
@@ -78,8 +78,18 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
         uint8_t tens = (decimal - ones) / 10;
 
         driver.write(character);
-        driver.write(ones + asciiNumberOffset); // 10^0 
-        driver.write(tens + asciiNumberOffset); // 10^1
+        driver.write(ones + asciiNumberOffset);
+
+        if (tens < 10)
+        {
+            driver.write(tens + asciiNumberOffset);
+        }
+        else
+        {
+            driver.write((tens % 10) + asciiNumberOffset);
+            uint8_t hundreds = decimal / 100; // just discard any remainder
+            driver.write(hundreds + asciiNumberOffset);
+        }
     }
 
     driver.display();

@@ -223,10 +223,30 @@ TEST(DisplayTests, DoubleDigitNegativeTemps)
     display.write(0xFE6F, SevenSegmentDisplay::Farenheit);
 }
 
-IGNORE_TEST(DisplayTests, ThreeDigits)
+TEST(DisplayTests, ThreeDigits)
 {
-    // This might require us to make some changes to the driver.
-    // How to handle 3 digit temps? Leverage the decimal points?
-    // Or maybe we just shift the °C/°F indicator off the display?
-    FAIL("BOOM!");
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, 'F');
+    expectWrite(driver, '0');
+    expectWrite(driver, '0');
+    expectWrite(driver, '1'); // We just shift out the °F to use all 3 segments.
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x0640, SevenSegmentDisplay::Farenheit);
+}
+
+TEST(DisplayTests, ThreeDigitsWithTensDigit)
+{
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, 'F');
+    expectWrite(driver, '5');
+    expectWrite(driver, '2');
+    expectWrite(driver, '1');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x07D0, SevenSegmentDisplay::Farenheit);
 }
