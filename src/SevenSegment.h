@@ -10,8 +10,8 @@ private:
     ShiftRegister& shiftRegister;
 public:
     SevenSegment(ShiftRegister& shiftRegister);
-    void write(uint8_t character);
-    void display();
+    virtual void write(uint8_t character);
+    virtual void display();
 };
 
 #endif
