@@ -116,3 +116,16 @@ TEST(DisplayTests, displayCelciusFive)
     SevenSegmentDisplay display(driver);
     display.write(0x0050, SevenSegmentDisplay::Celcius);
 }
+
+TEST(DisplayTests, displayCelciusTwoDigitNumber)
+{
+    SevenSegmentMock driver;
+
+    expectCelciusWritten(driver);
+    expectWrite(driver, '0');
+    expectWrite(driver, '1');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x00A0, SevenSegmentDisplay::Celcius);
+}
