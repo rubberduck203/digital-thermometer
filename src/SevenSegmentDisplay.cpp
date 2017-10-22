@@ -41,7 +41,8 @@ SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 {
     // printf("\n%X", temp);
-    // float actual = (float)(int16_t)temp / 16; // R = F/(2^f); Real = Fixed / (2^fractional bits)
+    // R = F/(2^f); Real = Fixed / (2^fractional bits)
+    // float actual = (float)(int16_t)temp / 16; 
     // printf("\n%f", actual);
 
     const int8_t scalingFactor = 4;
@@ -57,11 +58,19 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     if (negative)
     {
         uint8_t ones = ((decimal * -1) % 10); // -4 mod 10 = 6 ... we need the abs value here.
-        //uint8_t tens = (decimal + ones) / 10;
+        uint8_t tens = ((decimal + ones) * -1) / 10;
 
-        driver.write(character);
-        driver.write(ones + asciiNumberOffset); // 10^0 
-        driver.write('-'); // 10^1
+        if (0 == tens)
+        {
+            driver.write(character);
+            driver.write(ones + asciiNumberOffset); // 10^0 
+            driver.write('-'); // 10^1
+        }
+        else{
+            driver.write(ones + asciiNumberOffset);
+            driver.write(tens + asciiNumberOffset);
+            driver.write('-');
+        }
     }
     else 
     {    

@@ -209,10 +209,18 @@ TEST(DisplayTests, SingleDigitNegativeTemps)
     display.write(0xFFC0, SevenSegmentDisplay::Farenheit);
 }
 
-IGNORE_TEST(DisplayTests, DoubleDigitNegativeTemps)
+TEST(DisplayTests, DoubleDigitNegativeTemps)
 {
-    //| -25.0625         | 1111 1110 0110 1111     | FE6Fh     
-    // -25
+    SevenSegmentMock driver;
+    
+    expectWrite(driver, '5');
+    expectWrite(driver, '2');
+    expectWrite(driver, '-');
+    expectDisplayed(driver);
+
+    SevenSegmentDisplay display(driver);
+    // -25.0625 == 0b1111 1110 0110 1111 == 0xFE6F
+    display.write(0xFE6F, SevenSegmentDisplay::Farenheit);
 }
 
 IGNORE_TEST(DisplayTests, ThreeDigits)
