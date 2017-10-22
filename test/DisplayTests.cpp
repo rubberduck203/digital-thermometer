@@ -66,11 +66,16 @@ void expectDisplayed(SevenSegment& driver)
         .onObject(&driver);
 }
 
-void expectCelciusWritten(SevenSegment& driver)
+void expectWrite(SevenSegment& driver, char character)
 {
     mock().expectOneCall("write")
-            .onObject(&driver)
-            .withParameter("character", (unsigned char)'C');
+        .onObject(&driver)
+        .withParameter("character", (unsigned char)character);
+}
+
+void expectCelciusWritten(SevenSegment& driver)
+{
+    expectWrite(driver, 'C');
 }
 
 TEST(DisplayTests, displayCelciusZero)
@@ -78,11 +83,8 @@ TEST(DisplayTests, displayCelciusZero)
     SevenSegmentMock driver;
 
     expectCelciusWritten(driver);
-
-    mock().expectNCalls(2, "write")
-            .onObject(&driver)
-            .withParameter("character", (unsigned char)'0');
-
+    expectWrite(driver, '0');
+    expectWrite(driver, '0');
     expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
@@ -94,15 +96,8 @@ TEST(DisplayTests, displayCelciusOne)
     SevenSegmentMock driver;
 
     expectCelciusWritten(driver);
-
-    mock().expectOneCall("write")
-        .onObject(&driver)
-        .withParameter("character", (unsigned char)'1');
-
-    mock().expectOneCall("write")
-            .onObject(&driver)
-            .withParameter("character", (unsigned char)'0');
-
+    expectWrite(driver, '1');
+    expectWrite(driver, '0');
     expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
@@ -114,15 +109,8 @@ TEST(DisplayTests, displayCelciusFive)
     SevenSegmentMock driver;
 
     expectCelciusWritten(driver);
-
-    mock().expectOneCall("write")
-        .onObject(&driver)
-        .withParameter("character", (unsigned char)'5');
-
-    mock().expectOneCall("write")
-            .onObject(&driver)
-            .withParameter("character", (unsigned char)'0');
-
+    expectWrite(driver, '5');
+    expectWrite(driver, '0');
     expectDisplayed(driver);
 
     SevenSegmentDisplay display(driver);
