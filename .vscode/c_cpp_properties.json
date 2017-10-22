@@ -9,6 +9,8 @@
                 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include",
                 "/usr/include",
                 "${workspaceRoot}",
+                "/usr/local/Cellar/avr-gcc/7.2.0/avr/include",
+                "/usr/local/Cellar/avr-gcc/7.2.0/avr/include/avr",
                 "${workspaceRoot}/test/mocks"
             ],
             "defines": [],

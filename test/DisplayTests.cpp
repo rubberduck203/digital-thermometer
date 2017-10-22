@@ -64,9 +64,13 @@ TEST(DisplayTests, displayCelciusZero)
     SevenSegmentMock driver;
 
     mock().expectOneCall("write")
+        .onObject(&driver)
+        .withParameter("character", (unsigned char)'C');
+
+    mock().expectNCalls(2, "write")
             .onObject(&driver)
             .withParameter("character", (unsigned char)'0');
-    
+
     mock().expectOneCall("display")
             .onObject(&driver);
 

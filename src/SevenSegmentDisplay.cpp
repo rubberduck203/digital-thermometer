@@ -32,6 +32,8 @@ SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 
 void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 {
+    driver.write('C');
     driver.write('0'); 
+    driver.write('0');
     driver.display();
 }
