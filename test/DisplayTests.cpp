@@ -100,3 +100,26 @@ TEST(DisplayTests, displayCelciusOne)
     SevenSegmentDisplay display(driver);
     display.write(0x0010, SevenSegmentDisplay::Celcius);
 }
+
+TEST(DisplayTests, displayCelciusFive)
+{
+    SevenSegmentMock driver;
+
+    mock().expectOneCall("write")
+        .onObject(&driver)
+        .withParameter("character", (unsigned char)'C');
+
+    mock().expectOneCall("write")
+        .onObject(&driver)
+        .withParameter("character", (unsigned char)'5');
+
+    mock().expectOneCall("write")
+            .onObject(&driver)
+            .withParameter("character", (unsigned char)'0');
+
+    mock().expectOneCall("display")
+            .onObject(&driver);
+
+    SevenSegmentDisplay display(driver);
+    display.write(0x0050, SevenSegmentDisplay::Celcius);
+}

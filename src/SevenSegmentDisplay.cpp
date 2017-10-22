@@ -40,7 +40,7 @@ SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 
 void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 {
-    uint8_t ones = temp == 0x0010 ? '1' : '0';
+    uint8_t ones = (temp >> 4) + 48;
 
     driver.write('C');
     driver.write(ones); // 10^0 
