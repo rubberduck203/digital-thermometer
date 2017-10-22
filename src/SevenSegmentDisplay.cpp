@@ -51,14 +51,16 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     uint8_t character = (Celcius == scale) ? 'C' : 'F';
 
     uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
-    int8_t decimal = (rounded >> scalingFactor);         //Truncate fractional (div by 2^4)
+    int8_t decimal = (rounded >> scalingFactor);          //Truncate fractional (div by 2^4)
 
+    // Shift the sign bit into the Least Significant Bit
     bool negative = (temp >> 15);
-    // printf("\n%s", negative ? "true" : "false");
     if (negative)
     {
-        uint8_t ones = ((decimal * -1) % 10); // -4 mod 10 = 6 ... we need the abs value here.
-        uint8_t tens = ((decimal + ones) * -1) / 10;
+        // -4 mod 10 = 6 ... we need the abs value here.
+        uint8_t positive = decimal * -1;
+        uint8_t ones = positive % 10; 
+        uint8_t tens = positive / 10; // Allow int cast to discard the remainder.
 
         if (0 == tens)
         {
@@ -74,20 +76,17 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     }
     else 
     {    
-        uint8_t ones = (decimal % 10);
-        uint8_t tens = (decimal - ones) / 10;
+        uint8_t ones = decimal % 10;
+        uint8_t tens = decimal / 10; 
 
         driver.write(character);
         driver.write(ones + asciiNumberOffset);
+        // If we have over 9 tens, then we need to mod this to get the right number.
+        driver.write((tens % 10) + asciiNumberOffset); 
 
-        if (tens < 10)
+        if (tens >= 10)
         {
-            driver.write(tens + asciiNumberOffset);
-        }
-        else
-        {
-            driver.write((tens % 10) + asciiNumberOffset);
-            uint8_t hundreds = decimal / 100; // just discard any remainder
+            uint8_t hundreds = decimal / 100; 
             driver.write(hundreds + asciiNumberOffset);
         }
     }
