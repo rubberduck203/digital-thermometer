@@ -2,6 +2,14 @@
 #include "SevenSegment.h"
 
 /*
+We have 3 7-segment displays on the board.
+Writing a character shifts it into the 10s position, 
+so we must always write all 3 characters in before latching the display.
+
+| 10^1 | 10^0 | °C/°F |
+
+----
+
 Borrowing the fixed point number format of the data reading from the Max31280.
 We're going to use it for both °C and °F though.
 
@@ -32,8 +40,10 @@ SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 
 void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 {
+    uint8_t ones = temp == 0x0010 ? '1' : '0';
+
     driver.write('C');
-    driver.write('0'); 
-    driver.write('0');
+    driver.write(ones); // 10^0 
+    driver.write('0'); // 10^1
     driver.display();
 }
