@@ -3,6 +3,9 @@ all: check avr
 avr:
 	$(MAKE) -C src
 
+tiny:
+	$(MAKE) -C src DEVICE=attiny84
+
 .PHONY: size
 size:
 	$(MAKE) -C src $@
