@@ -3,6 +3,46 @@
 #include <stdint.h>
 #include "ShiftRegister.h"
 
+/*
++-------------+      +-------------+
+|             |      |DP           |
+|      A      |      |[]    D      |
+|   +-----+   |      |   +-----+   |
+|  F|     |B  |      |  C|     |E  |
+|   +  G  +   |      |   +  G  +   |
+|    +---+    |      |    +---+    |
+|   +     +   |      |   +     +   |
+|  E|     |C  |      |  B|     |F  |
+|   +-----+   |      |   +-----+   |
+|      D    []|      |      A      |
+|           DP|      |             |
++-------------+      +-------------+
+     NORMAL              INVERTED
+
+
+| Char | DP | G | F | E | D | C | B | A | Hex |
+|------|----|---|---|---|---|---|---|---|-----|
+| 0    | 0  | 0 | 1 | 1 | 1 | 1 | 1 | 1 | x3F |
+| 1    | 0  | 0 | 0 | 0 | 0 | 1 | 1 | 0 | x06 |
+| 2    | 0  | 1 | 0 | 1 | 1 | 0 | 1 | 1 | x5B |
+| 3    | 0  | 1 | 0 | 0 | 1 | 1 | 1 | 1 | x4F |
+| 4    | 0  | 1 | 1 | 0 | 0 | 1 | 1 | 0 | x66 |
+| 5    | 0  | 1 | 1 | 0 | 1 | 1 | 0 | 1 | x6D |
+| 6    | 0  | 1 | 1 | 1 | 1 | 1 | 0 | 1 | x7D |
+| 7    | 0  | 0 | 0 | 0 | 0 | 1 | 1 | 1 | x07 |
+| 8    | 0  | 1 | 1 | 1 | 1 | 1 | 1 | 1 | x7F |
+| 9    | 0  | 1 | 1 | 0 | 1 | 1 | 1 | 1 | x6F |
+| -    | 0  | 1 | 0 | 0 | 0 | 0 | 0 | 0 | x40 |
+| C    | 0  | 0 | 1 | 1 | 1 | 0 | 0 | 1 | x39 |
+| F    | 0  | 1 | 1 | 1 | 0 | 0 | 0 | 1 | x71 |
+| °C   | 1  | 0 | 0 | 0 | 1 | 1 | 1 | 1 | x8F |
+| °F   | 1  | 1 | 0 | 0 | 1 | 1 | 1 | 0 | xCE |
+
+- °C/°F leverage an inverted display.
+- This encoding relies on the shift register shifting in MSB first order.
+
+*/
+
 SevenSegment::SevenSegment(ShiftRegister& shiftRegister) : shiftRegister(shiftRegister)
 { 
 
