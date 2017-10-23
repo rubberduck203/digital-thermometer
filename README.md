@@ -10,7 +10,19 @@ and a MAX31820 one-wire temperature sensor.
 ## Board Design
 
 ### Bill of Materials
-TODO:
+
+| QTY | PART#           | DESC                        | MANUF                                    |
+|:---:| --------------- | --------------------------- | -----------------------------------------|
+|  3  | YSD-160AR4B-8   | 7 Seg. Common Anode Display | China Young Sun LED Technology Co., LTD. |
+|  3  | SN74HC595N      | 8 bit Shift Register        | Texas Instruments                        |
+|  3  |                 | 16 pin DIP socket           |                                          |
+| 24  |                 | 330 Ohm resistor            |                                          |
+|  1  |                 | SPST normally open switch   |                                          |
+|  1  |                 | 1uF capacitor               |                                          |
+|  1  | ATtiny84        | 8k Flash, 14 pin DIP        | Atmel                                    |
+|  1  |                 | 14 pin DIP socket           |                                          |
+|  1  | MAX31820        | One wire temp sensor        | Maxim                                    |
+|  1  |                 | 4.7 kOhm resistor           |                                          |
 
 ### Layout
 TODO: 
