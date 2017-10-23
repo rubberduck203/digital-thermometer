@@ -52,6 +52,9 @@ void SevenSegment::write(uint8_t character)
         case 'F':
             data = 0xCE;
             break;
+        case '-':
+            data = 0x40;
+            break;
         default:
             data = 0x00; // turn the segment off if we get an unsupported char
     }

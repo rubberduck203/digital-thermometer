@@ -149,6 +149,15 @@ TEST(SevenSegDriverTests, DegreesFarenheit)
     sevenSeg.write('F');
 }
 
+TEST(SevenSegDriverTests, Negative)
+{
+    ShiftRegisterMock shiftRegister;
+    expectByteWritten(shiftRegister, (unsigned char)~0x40);
+
+    SevenSegment sevenSeg(shiftRegister);
+    sevenSeg.write('-');
+}
+
 TEST(SevenSegDriverTests, unsupportedCharacterTurnsSegmentOff)
 {
     ShiftRegisterMock shiftRegister;
