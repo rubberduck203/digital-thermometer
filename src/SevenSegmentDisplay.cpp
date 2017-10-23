@@ -52,6 +52,7 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
 
     uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
     int8_t decimal = (rounded >> scalingFactor);          //Truncate fractional (div by 2^4)
+    // http://trac.bookofhook.com/bookofhook/trac.cgi/wiki/IntroductionToFixedPointMath#Rounding-to-Nearest
 
     // Shift the sign bit into the Least Significant Bit
     bool negative = (temp >> 15);
