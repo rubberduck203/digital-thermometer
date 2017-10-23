@@ -1,6 +1,3 @@
-#include "SevenSegmentDisplay.h"
-#include "SevenSegment.h"
-
 /*
 We have 3 7-segment displays on the board.
 Writing a character shifts it into the 10s position, 
@@ -34,6 +31,9 @@ https://datasheets.maximintegrated.com/en/ds/MAX31820.pdf
 Table 1
 */
 
+#include "SevenSegmentDisplay.h"
+#include "SevenSegment.h"
+
 SevenSegmentDisplay::SevenSegmentDisplay(SevenSegment& driver) : driver(driver)
 {
 }
@@ -48,7 +48,7 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     const int8_t scalingFactor = 4;
     const int8_t asciiNumberOffset = 48;
 
-    uint8_t character = (Celcius == scale) ? 'C' : 'F';
+    uint8_t tempScaleChar = (Celcius == scale) ? 'C' : 'F';
 
     uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
     int8_t decimal = (rounded >> scalingFactor);          //Truncate fractional (div by 2^4)
@@ -58,13 +58,13 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     if (negative)
     {
         // -4 mod 10 = 6 ... we need the abs value here.
-        uint8_t positive = decimal * -1;
-        uint8_t ones = positive % 10; 
-        uint8_t tens = positive / 10; // Allow int cast to discard the remainder.
+        int8_t positive = decimal * -1;
+        int8_t ones = positive % 10; 
+        int8_t tens = positive / 10; // Allow int cast to discard the remainder.
 
         if (0 == tens)
         {
-            driver.write(character);
+            driver.write(tempScaleChar);
             driver.write(ones + asciiNumberOffset); 
             driver.write('-'); 
         }
@@ -76,17 +76,17 @@ void SevenSegmentDisplay::write(uint16_t temp, Scale scale)
     }
     else 
     {    
-        uint8_t ones = decimal % 10;
-        uint8_t tens = decimal / 10; 
+        int8_t ones = decimal % 10;
+        int8_t tens = decimal / 10; 
 
-        driver.write(character);
+        driver.write(tempScaleChar);
         driver.write(ones + asciiNumberOffset);
-        // If we have over 9 tens, then we need to mod this to get the right number.
+        // If we have over 9 tens, then we need to mod this to get the right number. Do it everytime for simplicity.
         driver.write((tens % 10) + asciiNumberOffset); 
 
         if (tens >= 10)
         {
-            uint8_t hundreds = decimal / 100; 
+            int8_t hundreds = decimal / 100; 
             driver.write(hundreds + asciiNumberOffset);
         }
     }

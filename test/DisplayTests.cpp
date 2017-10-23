@@ -40,26 +40,6 @@ public:
     }
 };
 
-/*
-
-| BIT | 15 | 14 | 13 | 12 | 11 | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
-| --- | -- | -- | -- | -- | -- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-|Value|  S |  S |  S |  S |  S | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 | 2^-1| 2^-2| 2^-3| 2^-4| 
- 
-| TEMPERATURE (°C) | DIGITAL OUTPUT (BINARY) | DIGITAL OUTPUT (HEX) |
-| ---------------- | ----------------------- | -------------------- |
-| +125             | 0000 0111 1101 0000     | 07D0h                |
-| +85*             | 0000 0101 0101 0000     | 0550h                |
-| +25.0625         | 0000 0001 1001 0001     | 0191h                |
-| +10.125          | 0000 0000 1010 0010     | 00A2h                |
-| +0.5             | 0000 0000 0000 1000     | 0008h                |
-| 0                | 0000 0000 0000 0000     | 0000h                |
-| -0.5             | 1111 1111 1111 1000     | FFF8h                |
-| -10.125          | 1111 1111 0101 1110     | FF5Eh                |
-| -25.0625         | 1111 1110 0110 1111     | FE6Fh                |
-| -55              | 1111 1100 1001 0000     | FC90h                |
-*/
-
 void expectDisplayed(SevenSegment& driver)
 {
     mock().expectOneCall("display")
@@ -77,6 +57,15 @@ void expectCelciusWritten(SevenSegment& driver)
 {
     expectWrite(driver, 'C');
 }
+
+/*
+Fixed point format of "temp" argument.
+
+| BIT | 15 | 14 | 13 | 12 | 11 | 10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
+| --- | -- | -- | -- | -- | -- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+|Value|  S |  S |  S |  S |  S | 2^6 | 2^5 | 2^4 | 2^3 | 2^2 | 2^1 | 2^0 | 2^-1| 2^-2| 2^-3| 2^-4| 
+
+*/
 
 TEST(DisplayTests, displayCelciusZero)
 {
@@ -221,6 +210,15 @@ TEST(DisplayTests, DoubleDigitNegativeTemps)
     SevenSegmentDisplay display(driver);
     // -25.0625 == 0b1111 1110 0110 1111 == 0xFE6F
     display.write(0xFE6F, SevenSegmentDisplay::Farenheit);
+}
+
+IGNORE_TEST(DisplayTests, NeedToFixTripleDigitEdgeCase)
+{
+    // TODO: Segment 3 is inverted to get the ° symbol.
+    // I realized late in the game that we can't simply just shift into that space.
+    // The control codes for the 3rd segment are different.
+
+    FAIL("Segment 3 is inverted to get the ° symbol.");
 }
 
 TEST(DisplayTests, ThreeDigits)
