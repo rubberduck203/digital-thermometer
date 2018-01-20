@@ -41,6 +41,20 @@ bool OneWire::DevicePresent(void)
     return deviceFound;
 }
 
+void OneWire::Write(uint8_t data)
+{
+    #warning OneWire::write has no automated tests
+    
+    PrepareTx();
+  
+    // write least significant bit first
+    for(int8_t i = 0; i < 8; i++) {
+        WriteBit(!!(data & (1 << i)));
+    }
+
+    ReleaseTx();
+}
+
 void OneWire::WriteBit(uint8_t bit)
 {
     #warning OneWire::WriteBit has no automated tests
@@ -50,7 +64,6 @@ void OneWire::WriteBit(uint8_t bit)
         It's been verified with a scope.
         Don't muck with it unless you're ready to get one out.
     */
-
     const int MIN_WRITE_SLOT = 60;
 
     //pull line low so the device knows we're about to send.

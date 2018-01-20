@@ -157,7 +157,18 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
     CHECK_FALSE(oneWire.DevicePresent());
 }
 
-IGNORE_TEST(OneWireSpec, WriteBit)
+IGNORE_TEST(OneWireSpec, ReadBit)
 {
-    #warning OneWire::WriteBit has no automated tests
+    FAIL("BOOM");
+}
+
+IGNORE_TEST(OneWireSpec, ReadByte)
+{
+    FAIL("BOOM");
+}
+
+IGNORE_TEST(OneWireSpec, ReadScratchPad)
+{
+    FAIL("BOOM");
+    // move this one to a MAX31820 class
 }
