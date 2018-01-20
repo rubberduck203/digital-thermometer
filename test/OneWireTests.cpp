@@ -7,8 +7,17 @@
 
 TEST_GROUP(OneWireSpec)
 {
-
+    void teardown()
+    {
+        mock().clear();
+    }
 };
+
+void _delay_us(double __us) 
+{
+    mock().actualCall("_delay_us")
+        .withDoubleParameter("__us", __us);
+}
 
 TEST(OneWireSpec, OnInitialization_DirectionIsSetToOutput)
 {
@@ -53,6 +62,36 @@ TEST(OneWireSpec, PrepareTx_DirectionIsSetToOutput)
     OneWire oneWire(port, pin);
     oneWire.ReleaseTx();
     oneWire.PrepareTx();
-    
+
     BITS_EQUAL(0b01000000, port.Direction, 0xFF);
+}
+
+TEST(OneWireSpec, Reset_DirectionIsSetToOutput)
+{
+    mock().disable();
+    const int pin = 0;
+    IOPort_t port;
+    port.Direction = 0x00;
+
+    OneWire oneWire(port, pin);
+    oneWire.ReleaseTx();
+    oneWire.Reset();
+
+    BYTES_EQUAL(0X01, port.Direction);
+}
+
+TEST(OneWireSpec, Reset_OutputIsPulledLowForAMinimumOf480us)
+{
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 500);
+    
+    const int pin = 0;
+    IOPort_t port;
+    port.Data = 0xFF;
+
+    OneWire oneWire(port, pin);
+    oneWire.Reset();
+
+    BYTES_EQUAL(0xFE, port.Data);
+    mock().checkExpectations();
 }

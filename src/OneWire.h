@@ -13,6 +13,7 @@ public:
     OneWire(IOPort_t& port, const int pin);
     void ReleaseTx(void);
     void PrepareTx(void);
+    void Reset(void);
 };
 
 #endif
