@@ -43,14 +43,19 @@ TEST(OneWireSpec, ReleaseTx_DirectionIsSetToOutput)
 
 TEST(OneWireSpec, ReleaseTx_PullupsAreDisabled)
 {
+    /* 
+    Atmel gpio is tri-state. 
+    We must disable the internal pullups 
+    so that our external pullup can pull the line high.
+    */
     const int pin = 7;
     IOPort_t port;
-    port.Data = 0xFF;
+    port.DataOut = 0xFF;
     
     OneWire oneWire(port, pin);
     oneWire.ReleaseTx();
 
-    BITS_EQUAL(0b01111111, port.Data, 0xFF);
+    BITS_EQUAL(0b01111111, port.DataOut, 0xFF);
 }
 
 TEST(OneWireSpec, PrepareTx_DirectionIsSetToOutput)
@@ -87,11 +92,65 @@ TEST(OneWireSpec, Reset_OutputIsPulledLowForAMinimumOf480us)
     
     const int pin = 0;
     IOPort_t port;
-    port.Data = 0xFF;
+    port.DataOut = 0xFF;
 
     OneWire oneWire(port, pin);
     oneWire.Reset();
 
-    BYTES_EQUAL(0xFE, port.Data);
+    BYTES_EQUAL(0xFE, port.DataOut);
     mock().checkExpectations();
+}
+
+TEST(OneWireSpec, DevicePresent_Receives)
+{
+    mock().disable();
+
+    const int pin = 1;
+    IOPort_t port;
+    port.Direction = 0xFF;
+    port.DataOut = 0xFF;
+
+    OneWire oneWire(port, pin);
+    oneWire.DevicePresent();
+
+    //set to input
+    BYTES_EQUAL(0XFD, port.Direction);
+    //pullups disabled
+    BYTES_EQUAL(0XFD, port.DataOut);
+}
+
+TEST(OneWireSpec, DevicePresent_ListensFor60us)
+{
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 60);
+
+    IOPort_t port;
+    OneWire oneWire(port, 3);
+
+    oneWire.DevicePresent();
+    mock().checkExpectations();
+}
+
+TEST(OneWireSpec, DevicePresent_ReturnsTrueWhenLineLow)
+{
+    mock().disable();
+
+    const int pin = 0;
+    IOPort_t port;
+    port.DataIn = 0x00;
+
+    OneWire oneWire(port, pin);
+    CHECK(oneWire.DevicePresent());
+}
+
+TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
+{
+    mock().disable();
+
+    const int pin = 0;
+    IOPort_t port;
+    port.DataIn = 0xFF;
+
+    OneWire oneWire(port, pin);
+    CHECK_FALSE(oneWire.DevicePresent());
 }

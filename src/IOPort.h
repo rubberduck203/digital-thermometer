@@ -5,8 +5,9 @@
 
 struct IOPort_t
 {
+    volatile uint8_t DataIn;
     volatile uint8_t Direction;
-    volatile uint8_t Data;
+    volatile uint8_t DataOut;
 };
 
 #endif

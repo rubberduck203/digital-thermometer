@@ -24,7 +24,7 @@ ShiftRegister::ShiftRegister(IOPort_t& port) : port(port)
     port.Direction |= registerMask; //set 0-4 to output
 
     uint8_t lowPins = outputEnablePinMask | clockPinMask | latchPinMask;
-    port.Data = (port.Data & ~registerMask) | (registerMask & ~lowPins);
+    port.DataOut = (port.DataOut & ~registerMask) | (registerMask & ~lowPins);
 }
 
 void ShiftRegister::writeByte(uint8_t data)
@@ -46,11 +46,11 @@ void ShiftRegister::writeBit(uint8_t value)
 {
     if (0 == value)
     {
-        port.Data &= ~dataPinMask;
+        port.DataOut &= ~dataPinMask;
     }
     else
     {
-        port.Data |= dataPinMask;
+        port.DataOut |= dataPinMask;
     }
 
     pulse(clockPinMask);
@@ -65,8 +65,8 @@ void ShiftRegister::pulse(uint8_t bitmask)
 {
     // pull the pin high to clock the data, 
     // then back to low so we choose when to send it.
-    port.Data |= bitmask;
-    port.Data &= ~bitmask;
+    port.DataOut |= bitmask;
+    port.DataOut &= ~bitmask;
 
     // Hoping the tens of nanoseconds timing requirements are met here.
     // I haven't quite figured out how long it takes to do a digital write to GPIO.
