@@ -6,8 +6,8 @@
 class OneWire
 {
 private:
-    IOPort_t& _port;
-    const uint8_t _datalineMask;
+    IOPort_t& port;
+    const uint8_t datalineMask;
 
 public:
     OneWire(IOPort_t& port, const int pin);

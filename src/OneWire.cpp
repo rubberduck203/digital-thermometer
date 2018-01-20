@@ -1,13 +1,14 @@
 #include "OneWire.h"
 #include "IOPort.h"
 
-OneWire::OneWire(IOPort_t& port, const int pin) : _port(port), _datalineMask(1 << pin)
+OneWire::OneWire(IOPort_t& port, const int pin) 
+    : port(port), datalineMask(1 << pin)
 {
-    _port.Direction |= _datalineMask;
+    port.Direction |= datalineMask;
 }
 
 void OneWire::ReleaseTx(void)
 {
-    _port.Direction &= ~_datalineMask;
-    _port.Data &= ~_datalineMask;
+    port.Direction &= ~datalineMask;
+    port.Data &= ~datalineMask;
 }
