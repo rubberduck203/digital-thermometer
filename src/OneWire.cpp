@@ -12,3 +12,8 @@ void OneWire::ReleaseTx(void)
     port.Direction &= ~datalineMask;
     port.Data &= ~datalineMask;
 }
+
+void OneWire::PrepareTx(void)
+{
+    port.Direction |= datalineMask;
+}
