@@ -119,10 +119,12 @@ TEST(OneWireSpec, DevicePresent_Receives)
     BYTES_EQUAL(0XFD, port.DataOut);
 }
 
-TEST(OneWireSpec, DevicePresent_ListensFor60us)
+TEST(OneWireSpec, DevicePresent_ListensFor60usThenWaitsForPresenceSlotToClose)
 {
     mock().expectOneCall("_delay_us")
         .withDoubleParameter("__us", 60);
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 180);
 
     IOPort_t port;
     OneWire oneWire(port, 3);

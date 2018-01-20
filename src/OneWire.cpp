@@ -19,7 +19,7 @@ void OneWire::ReleaseTx(void)
 
 void OneWire::PrepareTx(void)
 {
-    //set pin to output
+    //set port to output
     port.Direction |= datalineMask;
 }
 
@@ -35,5 +35,8 @@ bool OneWire::DevicePresent(void)
 {
     ReleaseTx();
     _delay_us(60);
-    return !((port.DataIn >> pin) & 1);
+    bool deviceFound = !((port.DataIn >> pin) & 1);
+    //wait for presence slot to close before returning
+    _delay_us(180);
+    return deviceFound;
 }
