@@ -53,5 +53,6 @@ TEST(OneWireSpec, PrepareTx_DirectionIsSetToOutput)
     OneWire oneWire(port, pin);
     oneWire.ReleaseTx();
     oneWire.PrepareTx();
+    
     BITS_EQUAL(0b01000000, port.Direction, 0xFF);
 }
