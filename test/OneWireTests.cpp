@@ -20,3 +20,14 @@ TEST(OneWireSpec, OnInitialization_DirectionIsSetToOutput)
     BITS_EQUAL(0b10000000, port.Direction, 0xFF);
 }
 
+TEST(OneWireSpec, ReleaseTx_SetDirectionToInput)
+{
+    const int pin = 7;
+    IOPort_t port;
+    port.Direction = 0x00;
+    
+    OneWire oneWire(port, pin);
+    oneWire.ReleaseTx();
+
+    BYTES_EQUAL(0x00, port.Direction);
+}
