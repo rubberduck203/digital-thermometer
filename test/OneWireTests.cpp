@@ -36,7 +36,7 @@ TEST(OneWireSpec, ReleaseTx_DirectionIsSetToOutput)
     port.Direction = 0x00;
     
     OneWire oneWire(port, pin);
-    oneWire.ReleaseTx();
+    oneWire.releaseTx();
 
     BYTES_EQUAL(0x00, port.Direction);
 }
@@ -53,20 +53,20 @@ TEST(OneWireSpec, ReleaseTx_PullupsAreDisabled)
     port.DataOut = 0xFF;
     
     OneWire oneWire(port, pin);
-    oneWire.ReleaseTx();
+    oneWire.releaseTx();
 
     BITS_EQUAL(0b01111111, port.DataOut, 0xFF);
 }
 
-TEST(OneWireSpec, PrepareTx_DirectionIsSetToOutput)
+TEST(OneWireSpec, ObtainTx_DirectionIsSetToOutput)
 {
     const int pin = 6;
     IOPort_t port;
     port.Direction = 0x00;
 
     OneWire oneWire(port, pin);
-    oneWire.ReleaseTx();
-    oneWire.PrepareTx();
+    oneWire.releaseTx();
+    oneWire.obtainTx();
 
     BITS_EQUAL(0b01000000, port.Direction, 0xFF);
 }
@@ -79,8 +79,8 @@ TEST(OneWireSpec, Reset_DirectionIsSetToOutput)
     port.Direction = 0x00;
 
     OneWire oneWire(port, pin);
-    oneWire.ReleaseTx();
-    oneWire.Reset();
+    oneWire.releaseTx();
+    oneWire.reset();
 
     BYTES_EQUAL(0X01, port.Direction);
 }
@@ -95,7 +95,7 @@ TEST(OneWireSpec, Reset_OutputIsPulledLowForAMinimumOf480us)
     port.DataOut = 0xFF;
 
     OneWire oneWire(port, pin);
-    oneWire.Reset();
+    oneWire.reset();
 
     BYTES_EQUAL(0xFE, port.DataOut);
     mock().checkExpectations();
@@ -111,7 +111,7 @@ TEST(OneWireSpec, DevicePresent_Receives)
     port.DataOut = 0xFF;
 
     OneWire oneWire(port, pin);
-    oneWire.DevicePresent();
+    oneWire.devicePresent();
 
     //set to input
     BYTES_EQUAL(0XFD, port.Direction);
@@ -129,7 +129,7 @@ TEST(OneWireSpec, DevicePresent_ListensFor60usThenWaitsForPresenceSlotToClose)
     IOPort_t port;
     OneWire oneWire(port, 3);
 
-    oneWire.DevicePresent();
+    oneWire.devicePresent();
     mock().checkExpectations();
 }
 
@@ -142,7 +142,7 @@ TEST(OneWireSpec, DevicePresent_ReturnsTrueWhenLineLow)
     port.DataIn = 0x00;
 
     OneWire oneWire(port, pin);
-    CHECK(oneWire.DevicePresent());
+    CHECK(oneWire.devicePresent());
 }
 
 TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
@@ -154,7 +154,7 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
     port.DataIn = 0xFF;
 
     OneWire oneWire(port, pin);
-    CHECK_FALSE(oneWire.DevicePresent());
+    CHECK_FALSE(oneWire.devicePresent());
 }
 
 IGNORE_TEST(OneWireSpec, ReadBit)

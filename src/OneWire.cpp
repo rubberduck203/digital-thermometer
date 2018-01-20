@@ -6,10 +6,10 @@
 OneWire::OneWire(IOPort_t &port, const int pin)
     : port(port), pin(pin), datalineMask(1 << pin)
 {
-    PrepareTx();
+    obtainTx();
 }
 
-void OneWire::ReleaseTx(void)
+void OneWire::releaseTx(void)
 {
     // Set pin to input
     port.Direction &= ~datalineMask;
@@ -17,23 +17,23 @@ void OneWire::ReleaseTx(void)
     port.DataOut &= ~datalineMask;
 }
 
-void OneWire::PrepareTx(void)
+void OneWire::obtainTx(void)
 {
     //set port to output
     port.Direction |= datalineMask;
 }
 
-void OneWire::Reset(void)
+void OneWire::reset(void)
 {
     // pull pin low for a min. of 480us
-    PrepareTx();
+    obtainTx();
     port.DataOut &= ~datalineMask;
     _delay_us(500);
 }
 
-bool OneWire::DevicePresent(void)
+bool OneWire::devicePresent(void)
 {
-    ReleaseTx();
+    releaseTx();
     _delay_us(60);
     bool deviceFound = !((port.DataIn >> pin) & 1);
     //wait for presence slot to close before returning
@@ -41,21 +41,21 @@ bool OneWire::DevicePresent(void)
     return deviceFound;
 }
 
-void OneWire::Write(uint8_t data)
+void OneWire::write(uint8_t data)
 {
     #warning OneWire::write has no automated tests
     
-    PrepareTx();
+    obtainTx();
   
     // write least significant bit first
     for(int8_t i = 0; i < 8; i++) {
-        WriteBit(!!(data & (1 << i)));
+        writeBit(!!(data & (1 << i)));
     }
 
-    ReleaseTx();
+    releaseTx();
 }
 
-void OneWire::WriteBit(uint8_t bit)
+void OneWire::writeBit(uint8_t bit)
 {
     #warning OneWire::WriteBit has no automated tests
     /*
