@@ -31,3 +31,15 @@ TEST(OneWireSpec, ReleaseTx_SetDirectionToInput)
 
     BYTES_EQUAL(0x00, port.Direction);
 }
+
+TEST(OneWireSpec, ReleaseTx_PullupsAreDisabled)
+{
+    const int pin = 7;
+    IOPort_t port;
+    port.Data = 0xFF;
+    
+    OneWire oneWire(port, pin);
+    oneWire.ReleaseTx();
+
+    BITS_EQUAL(0b01111111, port.Data, 0xFF);
+}
