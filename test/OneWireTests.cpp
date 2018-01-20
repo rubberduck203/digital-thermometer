@@ -156,3 +156,8 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
     OneWire oneWire(port, pin);
     CHECK_FALSE(oneWire.DevicePresent());
 }
+
+IGNORE_TEST(OneWireSpec, WriteBit)
+{
+    #warning OneWire::WriteBit has no automated tests
+}

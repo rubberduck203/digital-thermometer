@@ -151,6 +151,7 @@ TEST(ShiftRegisterDriverTests, AfterLatch_NoOtherPinsHaveBeenModified)
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
 {
+    #warning ShiftRegister::writeByte has no automated tests
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.writeByte(0x05);
@@ -160,4 +161,9 @@ IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
     //  and that we've not mucked with other pins.
     // How can I verify that a bit pattern of 1-0-1-0-0-0-0-0 was shifted into the register?! UGH!
     // 
+}
+
+IGNORE_TEST(ShiftRegisterDriverTests, Pulse)
+{
+    #warning ShiftRegister::pulse has no automated tests
 }
