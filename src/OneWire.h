@@ -2,23 +2,26 @@
 #define _ONEWIRE_H_
 
 #include "IOPort.h"
+#include "OneWireImpl.h"
 
+/**
+ * Lightweight (i.e. incomplete) Maxim OneWire implementation.
+ */
 class OneWire
 {
   private:
-    IOPort_t &port;
-    const int pin;
-    const uint8_t datalineMask;
+    OneWireImpl impl;
+  public:
+    
+    /**
+     * Provides default implementation of OneWireImpl.
+     */
+    OneWire(IOPort_t &port, const int pin);
 
     /**
-     * Writes a bit on the bus.
-     * The caller is responsible for obtaining/releasing TX.
+     * For testing purposes.
      */
-    void writeBit(uint8_t bit);
-    void issueReadSlot(void);
-
-  public:
-    OneWire(IOPort_t &port, const int pin);
+    OneWire(IOPort_t &port, const int pin, OneWireImpl &impl);
     void releaseTx(void);
     void obtainTx(void);
 
@@ -39,12 +42,9 @@ class OneWire
      */
     void write(uint8_t data);
 
-    /**
-     * Issues a read slot and samples the line.
-     * Returns a uint8_t where only the MSB is populated.
+    /***
+     * Reads one byte.
      */
-    uint8_t readBit();
-
     uint8_t read();
 };
 

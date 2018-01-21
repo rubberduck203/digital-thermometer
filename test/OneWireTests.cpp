@@ -4,7 +4,6 @@
 #include "../src/OneWire.h"
 #include "../src/IOPort.h"
 
-
 TEST_GROUP(OneWireSpec)
 {
     void teardown()
@@ -155,59 +154,6 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
 
     OneWire oneWire(port, pin);
     CHECK_FALSE(oneWire.devicePresent());
-}
-
-TEST(OneWireSpec, ReadBit_Zero)
-{
-    mock().disable();
-
-    const int pin = 1;
-    IOPort_t port;
-    port.DataIn = 0x01;
-
-    OneWire oneWire(port, pin);
-
-    BYTES_EQUAL(0x00, oneWire.readBit());
-}
-
-TEST(OneWireSpec, ReadBit_One)
-{
-    mock().disable();
-
-    const int pin = 1;
-    IOPort_t port;
-    port.DataIn = 0x02;
-
-    OneWire oneWire(port, pin);
-
-    BYTES_EQUAL(0x01, oneWire.readBit());
-}
-
-TEST(OneWireSpec, ReadBit_ReadSlotTiming)
-{
-    // Internal detail of issueReadSlot. 
-    // I dont' like having this one here,
-    // but CppUTest's mocks require an expectation 
-    // on every call.
-    mock().expectOneCall("_delay_us")
-        .withDoubleParameter("__us", 1);
-
-    // Wait 10us to sample per Fig. 11 & 12 of the datasheet
-    mock().expectOneCall("_delay_us")
-        .withDoubleParameter("__us", 10);
-
-    // Wait the remainder of the 60us slot before doing it again.
-    mock().expectOneCall("_delay_us")
-        .withDoubleParameter("__us", 50);
-
-    const int pin = 1;
-    IOPort_t port;
-    port.DataIn = 0x02;
-
-    OneWire oneWire(port, pin);
-    oneWire.readBit();
-
-    mock().checkExpectations();
 }
 
 IGNORE_TEST(OneWireSpec, ReadScratchPad)
