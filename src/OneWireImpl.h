@@ -54,7 +54,7 @@ class OneWireImpl
      * Issues a read slot and samples the line.
      * Returns a uint8_t where only the MSB is populated.
      */
-    uint8_t readBit();
+    virtual uint8_t readBit();
 
     /**
      * Writes a bit on the bus.

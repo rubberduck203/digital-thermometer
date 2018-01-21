@@ -49,7 +49,6 @@ void OneWire::write(uint8_t data)
 
 uint8_t OneWire::read(void)
 {
-    #warning OneWire::read has no automated tests
     /* OneWire protocol specifies data is sent
         LSB and LSb first. */
     uint8_t buffer = 0;

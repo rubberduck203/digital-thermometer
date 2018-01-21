@@ -190,6 +190,14 @@ public:
             .onObject(this)
             .withUnsignedIntParameter("bit", bit);
     }
+
+    virtual uint8_t readBit()
+    {
+        mock().actualCall("readBit")
+                .onObject(this);
+
+        return mock().unsignedIntReturnValue();
+    }
 };
 
 TEST(OneWireSpec, write_ObtainsTx)
@@ -253,4 +261,32 @@ TEST(OneWireSpec, write_SendsLeastSignificantBitFirst)
     oneWire.write(0b01010101);
 
     mock().checkExpectations();
+}
+
+void expectReadBit(OneWireImpl &impl, uint8_t bit, int callIndex)
+{
+    mock().expectOneCall("readBit")
+        .onObject(&impl)
+        .withCallOrder(callIndex)
+        .andReturnValue(bit);
+}
+
+TEST(OneWireSpec, Read_ReadsOneByteLeastSignificantBitFirst)
+{
+    IOPort_t port;
+    ImplMock impl(port, 4);
+
+    expectReadBit(impl, 0, 1);
+    expectReadBit(impl, 1, 2);
+    expectReadBit(impl, 0, 3);
+    expectReadBit(impl, 1, 4);
+    expectReadBit(impl, 0, 5);
+    expectReadBit(impl, 1, 6);
+    expectReadBit(impl, 0, 7);
+    expectReadBit(impl, 1, 8);
+
+    mock().ignoreOtherCalls();
+
+    OneWire oneWire(impl);
+    BITS_EQUAL(0b10101010, oneWire.read(), 0xFF);
 }
