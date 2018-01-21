@@ -3,17 +3,9 @@
 
 #include <util/delay.h>
 
-OneWire::OneWire(IOPort_t &port, const int pin)
-    : impl(OneWireImpl(port, pin))
-{
-    obtainTx();
-}
-
-OneWire::OneWire(IOPort_t &port, const int pin, OneWireImpl &impl)
+OneWire::OneWire(OneWireImpl &impl)
     : impl(impl)
-{
-    obtainTx();
-}
+{ }
 
 void OneWire::releaseTx(void)
 {
@@ -44,9 +36,7 @@ bool OneWire::devicePresent(void)
 }
 
 void OneWire::write(uint8_t data)
-{
-    #warning OneWire::write has no automated tests
-    
+{    
     impl.obtainTx();
   
     // write least significant bit first

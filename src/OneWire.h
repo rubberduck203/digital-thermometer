@@ -10,18 +10,10 @@
 class OneWire
 {
   private:
-    OneWireImpl impl;
+    OneWireImpl &impl;
   public:
-    
-    /**
-     * Provides default implementation of OneWireImpl.
-     */
-    OneWire(IOPort_t &port, const int pin);
+    OneWire(OneWireImpl &impl);
 
-    /**
-     * For testing purposes.
-     */
-    OneWire(IOPort_t &port, const int pin, OneWireImpl &impl);
     void releaseTx(void);
     void obtainTx(void);
 

@@ -24,7 +24,8 @@ TEST(OneWireSpec, OnInitialization_DirectionIsSetToOutput)
     IOPort_t port;
     port.Direction = 0x00;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     BITS_EQUAL(0b10000000, port.Direction, 0xFF);
 }
 
@@ -34,7 +35,8 @@ TEST(OneWireSpec, ReleaseTx_DirectionIsSetToOutput)
     IOPort_t port;
     port.Direction = 0x00;
     
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.releaseTx();
 
     BYTES_EQUAL(0x00, port.Direction);
@@ -51,7 +53,8 @@ TEST(OneWireSpec, ReleaseTx_PullupsAreDisabled)
     IOPort_t port;
     port.DataOut = 0xFF;
     
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.releaseTx();
 
     BITS_EQUAL(0b01111111, port.DataOut, 0xFF);
@@ -63,7 +66,8 @@ TEST(OneWireSpec, ObtainTx_DirectionIsSetToOutput)
     IOPort_t port;
     port.Direction = 0x00;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.releaseTx();
     oneWire.obtainTx();
 
@@ -77,7 +81,8 @@ TEST(OneWireSpec, Reset_DirectionIsSetToOutput)
     IOPort_t port;
     port.Direction = 0x00;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.releaseTx();
     oneWire.reset();
 
@@ -93,7 +98,8 @@ TEST(OneWireSpec, Reset_OutputIsPulledLowForAMinimumOf480us)
     IOPort_t port;
     port.DataOut = 0xFF;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.reset();
 
     BYTES_EQUAL(0xFE, port.DataOut);
@@ -109,7 +115,8 @@ TEST(OneWireSpec, DevicePresent_Receives)
     port.Direction = 0xFF;
     port.DataOut = 0xFF;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     oneWire.devicePresent();
 
     //set to input
@@ -126,7 +133,8 @@ TEST(OneWireSpec, DevicePresent_ListensFor60usThenWaitsForPresenceSlotToClose)
         .withDoubleParameter("__us", 180);
 
     IOPort_t port;
-    OneWire oneWire(port, 3);
+    OneWireImpl impl(port, 3);
+    OneWire oneWire(impl);
 
     oneWire.devicePresent();
     mock().checkExpectations();
@@ -140,7 +148,8 @@ TEST(OneWireSpec, DevicePresent_ReturnsTrueWhenLineLow)
     IOPort_t port;
     port.DataIn = 0x00;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     CHECK(oneWire.devicePresent());
 }
 
@@ -152,12 +161,96 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
     IOPort_t port;
     port.DataIn = 0xFF;
 
-    OneWire oneWire(port, pin);
+    OneWireImpl impl(port, pin);
+    OneWire oneWire(impl);
     CHECK_FALSE(oneWire.devicePresent());
 }
 
-IGNORE_TEST(OneWireSpec, ReadScratchPad)
+class ImplMock : public OneWireImpl
 {
-    FAIL("BOOM");
-    // move this one to a MAX31820 class
+public:
+    ImplMock(IOPort_t port, const int pin) 
+        : OneWireImpl(port, pin) {}
+
+    virtual void obtainTx()
+    {
+        mock().actualCall("obtainTx")
+                .onObject(this);
+    }
+
+    virtual void releaseTx()
+    {
+        mock().actualCall("releaseTx")
+                .onObject(this);
+    }
+
+    virtual void writeBit(uint8_t bit)
+    {
+        mock().actualCall("writeBit")
+            .onObject(this)
+            .withUnsignedIntParameter("bit", bit);
+    }
+};
+
+TEST(OneWireSpec, write_ObtainsTx)
+{
+    IOPort_t port;
+    const int pin = 4;
+    ImplMock impl(port, pin);
+
+    mock().expectOneCall("obtainTx")
+        .onObject(&impl);
+    mock().ignoreOtherCalls();
+
+    OneWire oneWire(impl);
+    oneWire.write(1);
+
+    mock().checkExpectations();
+}
+
+TEST(OneWireSpec, write_ReleasesTx)
+{
+    IOPort_t port;
+    const int pin = 4;
+    ImplMock impl(port, pin);
+
+    mock().expectOneCall("releaseTx")
+        .onObject(&impl);
+    mock().ignoreOtherCalls();
+
+    OneWire oneWire(impl);
+    oneWire.write(1);
+
+    mock().checkExpectations();
+}
+
+void expectBitWrite(OneWireImpl &impl, uint8_t bit, int callIndex)
+{
+    mock().expectOneCall("writeBit")
+        .onObject(&impl)
+        .withUnsignedIntParameter("bit", bit)
+        .withCallOrder(callIndex);
+}
+
+TEST(OneWireSpec, write_SendsLeastSignificantBitFirst)
+{
+    IOPort_t port;
+    const int pin = 4;
+    ImplMock impl(port, pin);
+
+    expectBitWrite(impl, 1, 1);
+    expectBitWrite(impl, 0, 2);
+    expectBitWrite(impl, 1, 3);
+    expectBitWrite(impl, 0, 4);
+    expectBitWrite(impl, 1, 5);
+    expectBitWrite(impl, 0, 6);
+    expectBitWrite(impl, 1, 7);
+    expectBitWrite(impl, 0, 8);
+
+    mock().ignoreOtherCalls();
+
+    OneWire oneWire(impl);
+    oneWire.write(0b01010101);
+
+    mock().checkExpectations();
 }

@@ -43,12 +43,12 @@ class OneWireImpl
      * Releases the bus so slaves can send data.
      * The pull up resistor will pull the line high.
      */
-    void releaseTx(void);
+    virtual void releaseTx();
 
     /**
      * Sets the master's bus line to output.
      */
-    void obtainTx(void);
+    virtual void obtainTx();
 
     /**
      * Issues a read slot and samples the line.
@@ -60,13 +60,13 @@ class OneWireImpl
      * Writes a bit on the bus.
      * The caller is responsible for obtaining/releasing TX.
      */
-    void writeBit(uint8_t bit);
+    virtual void writeBit(uint8_t bit);
 
     /** 
      * Generates a read slot.
      * Caller is NOT responsible fore obtaining/releasing TX.
      */
-    void issueReadSlot(void);
+    void issueReadSlot();
 };
 
 #endif
