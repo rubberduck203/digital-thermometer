@@ -102,7 +102,9 @@ uint8_t OneWire::readBit(void)
     #warning OneWire::readBit has no automated tests
     issueReadSlot();
     _delay_us(10);
-    return (port.DataIn >> pin) & 1;
+    uint8_t result = (port.DataIn >> pin) & 1;
+    _delay_us(50);
+    return result;
 }
 
 uint8_t OneWire::read(void)

@@ -183,7 +183,7 @@ TEST(OneWireSpec, ReadBit_One)
     BYTES_EQUAL(0x01, oneWire.readBit());
 }
 
-TEST(OneWireSpec, ReadBit_Waits10usAfterIssuingReadSlotBeforeSampling)
+TEST(OneWireSpec, ReadBit_ReadSlotTiming)
 {
     // Internal detail of issueReadSlot. 
     // I dont' like having this one here,
@@ -192,9 +192,13 @@ TEST(OneWireSpec, ReadBit_Waits10usAfterIssuingReadSlotBeforeSampling)
     mock().expectOneCall("_delay_us")
         .withDoubleParameter("__us", 1);
 
-    //The thing we're acutally testing.
+    // Wait 10us to sample per Fig. 11 & 12 of the datasheet
     mock().expectOneCall("_delay_us")
         .withDoubleParameter("__us", 10);
+
+    // Wait the remainder of the 60us slot before doing it again.
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 50);
 
     const int pin = 1;
     IOPort_t port;
@@ -204,11 +208,6 @@ TEST(OneWireSpec, ReadBit_Waits10usAfterIssuingReadSlotBeforeSampling)
     oneWire.readBit();
 
     mock().checkExpectations();
-}
-
-IGNORE_TEST(OneWireSpec, ReadByte)
-{
-    FAIL("BOOM");
 }
 
 IGNORE_TEST(OneWireSpec, ReadScratchPad)
