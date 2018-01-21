@@ -88,3 +88,32 @@ void OneWire::writeBit(uint8_t bit)
         _delay_us(MIN_WRITE_SLOT);
     }
 }
+
+void OneWire::issueReadSlot(void)
+{
+    obtainTx();
+    port.DataOut &= ~datalineMask;
+    _delay_us(1);
+    releaseTx();
+}
+
+uint8_t OneWire::readBit(void)
+{
+    #warning OneWire::readBit has no automated tests
+    issueReadSlot();
+    _delay_us(10);
+    return (port.DataIn >> pin) & 1;
+}
+
+uint8_t OneWire::read(void)
+{
+    #warning OneWire::read has no automated tests
+    /* OneWire protocol specifies data is sent
+        LSB and LSb first. */
+    uint8_t buffer = 0;
+    for(int i = 0; i < 8; i++)
+    {
+        buffer |= (readBit() << i);
+    }
+    return buffer;
+}

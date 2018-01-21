@@ -157,9 +157,53 @@ TEST(OneWireSpec, DevicePresent_ReturnsFalseWhenLineHigh)
     CHECK_FALSE(oneWire.devicePresent());
 }
 
-IGNORE_TEST(OneWireSpec, ReadBit)
+TEST(OneWireSpec, ReadBit_Zero)
 {
-    FAIL("BOOM");
+    mock().disable();
+
+    const int pin = 1;
+    IOPort_t port;
+    port.DataIn = 0x01;
+
+    OneWire oneWire(port, pin);
+
+    BYTES_EQUAL(0x00, oneWire.readBit());
+}
+
+TEST(OneWireSpec, ReadBit_One)
+{
+    mock().disable();
+
+    const int pin = 1;
+    IOPort_t port;
+    port.DataIn = 0x02;
+
+    OneWire oneWire(port, pin);
+
+    BYTES_EQUAL(0x01, oneWire.readBit());
+}
+
+TEST(OneWireSpec, ReadBit_Waits10usAfterIssuingReadSlotBeforeSampling)
+{
+    // Internal detail of issueReadSlot. 
+    // I dont' like having this one here,
+    // but CppUTest's mocks require an expectation 
+    // on every call.
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 1);
+
+    //The thing we're acutally testing.
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 10);
+
+    const int pin = 1;
+    IOPort_t port;
+    port.DataIn = 0x02;
+
+    OneWire oneWire(port, pin);
+    oneWire.readBit();
+
+    mock().checkExpectations();
 }
 
 IGNORE_TEST(OneWireSpec, ReadByte)
