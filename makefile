@@ -24,4 +24,4 @@ install: upload
 
 .PHONY: upload
 upload:
-	avrdude -C/usr/local/Cellar/avrdude/6.3/etc/avrdude.conf -v -patmega328p -carduino -P/dev/cu.usbserial-DN01JMER -b115200 -D -Uflash:w:src/bin/Demo.hex:i 
+	avrdude -C/usr/local/etc/avrdude.conf -v -patmega328p -carduino -P/dev/cu.usbserial-DN01JMER -b115200 -D -Uflash:w:src/bin/Demo.hex:i 

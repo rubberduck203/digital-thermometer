@@ -6,7 +6,7 @@
 // /* Shift Register Driver Demo 1 */
 // int main(void) 
 // {   
-//     IOPort_t* shiftRegisterPort = (IOPort_t*)&DDRB;
+//     IOPort_t* shiftRegisterPort = (IOPort_t*)&PINB;
 //     ShiftRegister shiftRegister(*shiftRegisterPort);
 //     for(;;)
 //     {
@@ -23,7 +23,7 @@
 // /* Shift Register Demo 2 */
 // int main(void) 
 // {   
-//     IOPort_t* shiftRegisterPort = (IOPort_t*)&DDRB;
+//     IOPort_t* shiftRegisterPort = (IOPort_t*)&PINB;
 //     ShiftRegister shiftRegister(*shiftRegisterPort);
 
 //     int i = 0;
@@ -44,7 +44,7 @@
 /* 7-Seg Driver Demo */
 int main(void) 
 {   
-    IOPort_t* shiftRegisterPort = (IOPort_t*)&DDRB;
+    IOPort_t* shiftRegisterPort = (IOPort_t*)&PINB;
     ShiftRegister shiftRegister(*shiftRegisterPort);
 
     SevenSegment sevenSeg(shiftRegister);

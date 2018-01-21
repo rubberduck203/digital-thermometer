@@ -43,47 +43,47 @@ TEST(ShiftRegisterDriverTests, OnInitalization_DirectionFor_PinsFiveSixAndSeven_
 TEST(ShiftRegisterDriverTests, OnInitalization_DataOn_PinsFiveSixAndSeven_IsNotModified)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0x00;
+    shiftRegPort.DataOut = 0x00;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b00011111, shiftRegPort.Data, 0b11100000);
+    BITS_EQUAL(0b00011111, shiftRegPort.DataOut, 0b11100000);
 }
 
 TEST(ShiftRegisterDriverTests, OnIntialization_OutputEnableIsDrivenLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0b11110111, shiftRegPort.Data, 0x08);
+    BITS_EQUAL(0b11110111, shiftRegPort.DataOut, 0x08);
     // it would be far nicer to have bool shiftRegister.OutputEnabled()
 }
 
 TEST(ShiftRegisterDriverTests, OnInitialization_ClearIsDrivenHigh)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0x00;
+    shiftRegPort.DataOut = 0x00;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0x1, shiftRegPort.Data, 0x01);
+    BITS_EQUAL(0x1, shiftRegPort.DataOut, 0x01);
 }
 
 TEST(ShiftRegisterDriverTests, OnInitialization_ClockIsDrivenLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0x00, shiftRegPort.Data, 0x02);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, 0x02);
 }
 
 TEST(ShiftRegisterDriverTests, OnInitialization_LatchIsDrivenLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
 
-    BITS_EQUAL(0x00, shiftRegPort.Data, 0x04);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, 0x04);
 }
 
 const int clockPinMask = 0x02;
@@ -94,26 +94,26 @@ TEST(ShiftRegisterDriverTests, ShiftHighOut)
 {
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
-    shiftRegPort.Data = 0x00; //don't ever set this directly like this in prod. Just setting up the test.
-    BITS_EQUAL(0x00, shiftRegPort.Data, dataPinMask);
+    shiftRegPort.DataOut = 0x00; //don't ever set this directly like this in prod. Just setting up the test.
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, dataPinMask);
     shiftRegister.writeBit(1);
-    BITS_EQUAL(0xFF, shiftRegPort.Data, dataPinMask);
+    BITS_EQUAL(0xFF, shiftRegPort.DataOut, dataPinMask);
 
     //verify we haven't messed with other pins
-    BITS_EQUAL(0x00, shiftRegPort.Data, ~dataPinMask);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, ~dataPinMask);
 }
 
 TEST(ShiftRegisterDriverTests, ShiftLowOut)
 {
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
-    shiftRegPort.Data = 0xFF; //don't ever set this directly like this in prod. Just setting up the test.
-    BITS_EQUAL(0xFF, shiftRegPort.Data, dataPinMask);
+    shiftRegPort.DataOut = 0xFF; //don't ever set this directly like this in prod. Just setting up the test.
+    BITS_EQUAL(0xFF, shiftRegPort.DataOut, dataPinMask);
     shiftRegister.writeBit(0);
-    BITS_EQUAL(0x00, shiftRegPort.Data, dataPinMask);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, dataPinMask);
 
     //verify we haven't messed with other pins (except clock pin)
-    BITS_EQUAL(0xFF, shiftRegPort.Data, ~dataPinMask & ~clockPinMask);
+    BITS_EQUAL(0xFF, shiftRegPort.DataOut, ~dataPinMask & ~clockPinMask);
 }
 
 TEST(ShiftRegisterDriverTests, AfterShiftBitOut_ClockIsLow)
@@ -123,34 +123,35 @@ TEST(ShiftRegisterDriverTests, AfterShiftBitOut_ClockIsLow)
     // So, I wrote the test, added the write high, which broke it, then added the write low.
     // Not exactly ideal, but the functionality was verified once and other tests broke when I did it.
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.writeBit(1);
 
-    BITS_EQUAL(0x00, shiftRegPort.Data, clockPinMask);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, clockPinMask);
 }
 
 TEST(ShiftRegisterDriverTests, AfterLatch_LatchIsLow)
 {
     IOPort_t shiftRegPort;
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.latch();
 
-    BITS_EQUAL(0x00, shiftRegPort.Data, latchPinMask);
+    BITS_EQUAL(0x00, shiftRegPort.DataOut, latchPinMask);
 }
 
 TEST(ShiftRegisterDriverTests, AfterLatch_NoOtherPinsHaveBeenModified)
 {
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
-    shiftRegPort.Data = 0xFF;
+    shiftRegPort.DataOut = 0xFF;
     shiftRegister.latch();
-    BITS_EQUAL(0xFF, shiftRegPort.Data, ~latchPinMask);
+    BITS_EQUAL(0xFF, shiftRegPort.DataOut, ~latchPinMask);
 }
 
 IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
 {
+    #warning ShiftRegister::writeByte has no automated tests
     IOPort_t shiftRegPort;
     ShiftRegister shiftRegister(shiftRegPort);
     shiftRegister.writeByte(0x05);
@@ -160,4 +161,9 @@ IGNORE_TEST(ShiftRegisterDriverTests, WritesAByte)
     //  and that we've not mucked with other pins.
     // How can I verify that a bit pattern of 1-0-1-0-0-0-0-0 was shifted into the register?! UGH!
     // 
+}
+
+IGNORE_TEST(ShiftRegisterDriverTests, Pulse)
+{
+    #warning ShiftRegister::pulse has no automated tests
 }
