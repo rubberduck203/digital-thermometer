@@ -77,8 +77,60 @@ int main(void)
     OneWireImpl impl(*oneWirePort, PIND7);
     OneWire oneWire(impl);
 
+
+    /*
+    PIND7 is also PCINT23
+    An interrupt on PCINT23 triggers on PCI2 (pin change interrupt)
+    The PCMSK2 register controls which pins contribute to the pin change interrupts.
+
+    Pin Change Interrupt Control Register (PCICR)
+
+    Bit 2 – PCIE2: Pin Change Interrupt Enable 2
+    When the PCIE2 bit is set and the I-bit in the Status Register (SREG) is set, pin change interrupt 2 is
+    enabled. *Any change* on any enabled PCINT[23:16] pin will cause an interrupt. The corresponding
+    interrupt of Pin Change Interrupt Request is executed from the PCI2 Interrupt Vector. PCINT[23:16] pins
+    are enabled individually by the PCMSK2 Register.
+
+    | 7-3 | 2     | 1     | 0     |
+    | N/A | PCIE2 | PCIE1 | PCIE0 |
+
+    Pin Change Mask Register 2 PCMSK2
+    | 7       | 6       | 5       | 4       | 3       | 2       | 1       | 0       |
+    | PCINT23 | PCINT22 | PCINT21 | PCINT20 | PCINT19 | PCINT18 | PCINT17 | PCINT16 |
+    
+
+    INT0 is on D2 (arduino 2) 
+    INT1 is on D3 (arduino 3)
+    These interrupts support rising edge mode.
+
+    If using a Pin Change Interrupt, 
+    we'll need to read the line state in order to determine whether
+    it's rising or falling because any change will trigger.
+    Also worth noting that if using more than one PCI on the same PORT, 
+    all enabled pins will trigger, even when in output mode.
+
+    PCMSK2 |= (1 << PCINT23);   // enable pci on PIND7
+    PCICR |= (1 << PCIE2);      // enable PCI2
+    sei();                      // enable global interrupt
+
+    ISR(PCINT2_vect)
+    {
+        uint8_t pin = (PIND >> PIND7) & 1; // OneWireImpl::readBit()
+        if (pin)
+        {
+            OneWire.State == ReadyToReceive;
+        } else 
+        {
+            OneWire.State = Error;
+        }
+    }
+    */
+
+    
     for(;;)
     {
+        // if onweWire.State == Reset || Error
+
         oneWire.reset();
         bool deviceFound = oneWire.devicePresent();
 
@@ -92,6 +144,14 @@ int main(void)
             //todo: add a timeout?
         }
 
+        // issue read slot
+        // register isr
+        // enable interrupt
+        // oneWire.State = WaitingForInterrupt
+        // continue
+
+        // else Temp Conversion Ready state
+        // oneWire.state == ReadyToReceive
         oneWire.reset();
         deviceFound = oneWire.devicePresent();
 
@@ -103,6 +163,8 @@ int main(void)
         {
             buffer[i] = oneWire.read();
         }
+
+        _delay_ms(1000);
     }
     return 0;
 }
