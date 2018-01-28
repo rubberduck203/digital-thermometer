@@ -101,7 +101,7 @@ ISR(PCINT2_vect)
      * We need to read the line state in order to determine whether
      * it's rising or falling because any change will trigger for a PCI 
     */
-    readyToReceive = impl.readBit();
+    readyToReceive = impl.readPin();
 }
 
 int main(void) 
@@ -145,8 +145,9 @@ int main(void)
                 buffer[i] = oneWire.read();
             }
 
+            readyToReceive = false;
             reset = true;
-            _delay_ms(1000);
+            _delay_ms(500);
         }
     }
     return 0;
