@@ -2,9 +2,9 @@
 PROGNAME = demo
 # Valid avr-gcc device from this list: 
 # http://www.atmel.com/webdoc/avrlibcreferencemanual/index_1supp_devices.html
-DEVICE = atmega328
+DEVICE ?= atmega328
 # Processor speed (check your datasheet)
-F_CPU = 32000000UL
+F_CPU ?= 16000000UL
 
 ### Shouldn't need to modify below this line ###
 CC = avr-gcc

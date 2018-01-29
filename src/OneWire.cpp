@@ -17,6 +17,11 @@ void OneWire::obtainTx(void)
     impl.obtainTx();
 }
 
+void OneWire::issueReadSlot(void)
+{
+    impl.issueReadSlot();
+}
+
 void OneWire::reset(void)
 {
     // pull pin low for a min. of 480us
