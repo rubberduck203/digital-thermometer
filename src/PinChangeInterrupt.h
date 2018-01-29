@@ -6,6 +6,9 @@
 struct PinChangeInterrupt
 {
     volatile uint8_t MaskRegister;
+    volatile uint8_t ControlRegister;
+    int ControlRegisterEnableIndex; 
+    int Pin;
 };
 
 #endif

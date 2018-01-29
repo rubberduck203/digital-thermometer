@@ -92,6 +92,21 @@ TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
     BYTES_EQUAL(0x00, pci.MaskRegister);
 }
 
+TEST(TempSensor, onCreate_InterruptPortIsEnabled)
+{
+    PinChangeInterrupt pci;
+    pci.ControlRegister = 0x01; //some other thing has cr1 enabled
+    pci.ControlRegisterEnableIndex = 1;
+
+    IOPort_t port;
+    OneWireImpl impl(port, 0);
+    MockOneWire oneWire(impl); 
+
+    Max31820 tempSensor(oneWire, pci);
+
+    BYTES_EQUAL(0x03, pci.ControlRegister); // we've enabled our pci w/out messing with anyone else
+}
+
 TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
     PinChangeInterrupt pci;
@@ -116,12 +131,12 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 
     mock().ignoreOtherCalls();
 
+    pci.Pin = 3;
     Max31820 tempSensor(oneWire, pci);
     tempSensor.requestTemperature();
 
     LONGS_EQUAL(Max31820State::WAITING, tempSensor.state());
-
-    FAIL("Need to enable Pin Change Interrupt");
+    BYTES_EQUAL(0x08, pci.MaskRegister);
 }
 
 IGNORE_TEST(TempSensor, requestTemperature_whenDeviceNOTFound)

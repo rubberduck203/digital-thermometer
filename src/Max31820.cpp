@@ -7,6 +7,7 @@ Max31820::Max31820(OneWire &oneWire, PinChangeInterrupt &pci): oneWire(oneWire),
 { 
     _state = Max31820State::RESET;
     _pci.MaskRegister = 0x00; // disable pin change interrupts for all pins on port
+    _pci.ControlRegister |= (1 << _pci.ControlRegisterEnableIndex);
 }
 
 void Max31820::requestTemperature()
@@ -18,6 +19,7 @@ void Max31820::requestTemperature()
 
     oneWire.issueReadSlot();
     _state = Max31820State::WAITING;
+    _pci.MaskRegister |= (1 << _pci.Pin); // enable pci on specified pin
 }
 
 Max31820State Max31820::state()
