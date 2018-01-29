@@ -116,7 +116,7 @@ int main(void)
     const uint8_t CMD_CONVERTT = 0x44;
     const uint8_t CMD_READ_SCRATCHPAD = 0xBE;
 
-    sei();                      // enable global interrupt
+    sei(); // enable global interrupt
 
     bool reset = true;
     for(;;)

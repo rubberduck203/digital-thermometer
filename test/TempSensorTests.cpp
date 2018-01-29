@@ -145,7 +145,6 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 
     mock().ignoreOtherCalls();
 
-
     Max31820 tempSensor(oneWire, pci);
     tempSensor.requestTemperature();
 
@@ -153,7 +152,35 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
     BYTES_EQUAL(0x08, pci.MaskRegister);
 }
 
-IGNORE_TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
+TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
 {
-    FAIL("HANDLE ERROR CASE")
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    int interruptPin = 3;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
+
+    IOPort_t port;
+    OneWireImpl impl(port, 0);
+    MockOneWire oneWire(impl);
+
+    mock().expectOneCall("devicePresent")
+        .onObject(&oneWire)
+        .andReturnValue(false);
+
+    mock().expectNoCall("write");
+    mock().expectNoCall("issueReadSlot");
+
+    mock().ignoreOtherCalls();
+
+    Max31820 tempSensor(oneWire, pci);
+    tempSensor.requestTemperature();
+
+    //maybe ERROR would be better? DEVICE_NOT_FOUND?
+    LONGS_EQUAL(Max31820State::RESET, tempSensor.state());
+    BYTES_EQUAL(0x00, pci.MaskRegister); //all interrupt pins are still disabled
+}
+
+IGNORE_TEST(TempSensor, readTemp)
+{
+    FAIL("NEEDS IMPLEMENTED");
 }

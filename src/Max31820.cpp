@@ -13,7 +13,14 @@ Max31820::Max31820(OneWire &oneWire, PinChangeInterrupt_t &pci): oneWire(oneWire
 void Max31820::requestTemperature()
 {
     oneWire.reset();
-    oneWire.devicePresent();
+
+    if (!oneWire.devicePresent())
+    {
+        //no devices present, try again
+        _state = Max31820State::RESET;
+        return; //return false? errorcode?
+    }
+
     oneWire.write(CMD_SKIP_ROM);
     oneWire.write(CMD_CONVERTT);
 
