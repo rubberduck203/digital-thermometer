@@ -26,6 +26,20 @@ public:
             .onObject(this);
     }
 
+    virtual bool devicePresent()
+    {
+        return mock().actualCall("devicePresent")
+            .onObject(this)
+            .returnBoolValue();
+    }
+
+    virtual void write(uint8_t data)
+    {
+        mock().actualCall("write")
+            .onObject(this)
+            .withUnsignedIntParameter("data", data);
+    }
+
 };
 
 TEST(TempSensor, requestTemperature_resets)
@@ -41,4 +55,33 @@ TEST(TempSensor, requestTemperature_resets)
 
     Max31820 tempSensor(oneWire);
     tempSensor.requestTemperature();
+}
+
+TEST(TempSensor, requestTemperature_whenDeviceFound_SendTemperatureConversionCommand)
+{
+    IOPort_t port;
+    OneWireImpl impl(port, 0);
+    MockOneWire oneWire(impl);
+
+    mock().expectOneCall("devicePresent")
+        .onObject(&oneWire)
+        .andReturnValue(true);
+
+    mock().expectOneCall("write")
+        .onObject(&oneWire)
+        .withUnsignedIntParameter("data", 0xCC); //skip rom; we only have one sensor on the bus
+    
+      mock().expectOneCall("write")
+        .onObject(&oneWire)
+        .withUnsignedIntParameter("data", 0x44); //ConvertTemp
+
+    mock().ignoreOtherCalls();
+
+    Max31820 tempSensor(oneWire);
+    tempSensor.requestTemperature();
+}
+
+IGNORE_TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
+{
+
 }

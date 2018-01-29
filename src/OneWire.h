@@ -28,12 +28,12 @@ class OneWire
      * call this to check for a device on the bus.
      * Returns true if found, otherwise false. 
      */
-    bool devicePresent(void);
+    virtual bool devicePresent(void);
 
     /**
      * Writes one byte to the bus LSB first.
      */
-    void write(uint8_t data);
+    virtual void write(uint8_t data);
 
     /***
      * Reads one byte.
