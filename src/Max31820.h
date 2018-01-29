@@ -15,10 +15,10 @@ class Max31820
 private:
     OneWire &oneWire;
     Max31820State _state;
-    PinChangeInterrupt &_pci;
+    PinChangeInterrupt_t &_pci;
 
 public:
-    Max31820(OneWire &oneWire, PinChangeInterrupt &pci);
+    Max31820(OneWire &oneWire, PinChangeInterrupt_t &pci);
     void requestTemperature();
     Max31820State state();
 };

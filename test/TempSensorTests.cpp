@@ -51,7 +51,7 @@ public:
 
 TEST(TempSensor, requestTemperature_resets)
 {
-    PinChangeInterrupt pci;
+    PinChangeInterrupt_t pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -67,7 +67,7 @@ TEST(TempSensor, requestTemperature_resets)
 
 TEST(TempSensor, onCreate_InResetMode)
 {
-    PinChangeInterrupt pci;
+    PinChangeInterrupt_t pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -80,7 +80,7 @@ TEST(TempSensor, onCreate_InResetMode)
 
 TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
 {
-    PinChangeInterrupt pci;
+    PinChangeInterrupt_t pci;
     pci.MaskRegister = 0xFF;
 
     IOPort_t port;
@@ -94,7 +94,7 @@ TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
 
 TEST(TempSensor, onCreate_InterruptPortIsEnabled)
 {
-    PinChangeInterrupt pci;
+    PinChangeInterrupt_t pci;
     pci.ControlRegister = 0x01; //some other thing has cr1 enabled
     pci.ControlRegisterEnableIndex = 1;
 
@@ -109,7 +109,7 @@ TEST(TempSensor, onCreate_InterruptPortIsEnabled)
 
 TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
-    PinChangeInterrupt pci;
+    PinChangeInterrupt_t pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);

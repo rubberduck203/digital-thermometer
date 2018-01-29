@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-struct PinChangeInterrupt
+struct PinChangeInterrupt_t
 {
     volatile uint8_t MaskRegister;
     volatile uint8_t ControlRegister;
