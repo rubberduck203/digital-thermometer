@@ -40,6 +40,12 @@ public:
             .withUnsignedIntParameter("data", data);
     }
 
+    virtual void issueReadSlot()
+    {
+        mock().actualCall("issueReadSlot")
+            .onObject(this);
+    }
+
 };
 
 TEST(TempSensor, requestTemperature_resets)
@@ -57,7 +63,7 @@ TEST(TempSensor, requestTemperature_resets)
     tempSensor.requestTemperature();
 }
 
-TEST(TempSensor, requestTemperature_whenDeviceFound_SendTemperatureConversionCommand)
+TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
     IOPort_t port;
     OneWireImpl impl(port, 0);
@@ -71,9 +77,12 @@ TEST(TempSensor, requestTemperature_whenDeviceFound_SendTemperatureConversionCom
         .onObject(&oneWire)
         .withUnsignedIntParameter("data", 0xCC); //skip rom; we only have one sensor on the bus
     
-      mock().expectOneCall("write")
+    mock().expectOneCall("write")
         .onObject(&oneWire)
         .withUnsignedIntParameter("data", 0x44); //ConvertTemp
+
+    mock().expectOneCall("issueReadSlot")
+        .onObject(&oneWire);
 
     mock().ignoreOtherCalls();
 

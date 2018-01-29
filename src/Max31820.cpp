@@ -11,4 +11,6 @@ void Max31820::requestTemperature()
     oneWire.devicePresent();
     oneWire.write(CMD_SKIP_ROM);
     oneWire.write(CMD_CONVERTT);
+
+    oneWire.issueReadSlot();
 }

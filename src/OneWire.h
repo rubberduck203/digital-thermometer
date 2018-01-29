@@ -16,7 +16,8 @@ class OneWire
 
     void releaseTx(void);
     void obtainTx(void);
-    void issueReadSlot(void);
+    
+    virtual void issueReadSlot(void);
 
     /**
      * Sends a reset pulse.
