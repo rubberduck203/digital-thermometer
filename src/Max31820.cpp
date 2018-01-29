@@ -3,9 +3,10 @@
 const uint8_t CMD_SKIP_ROM = 0xCC;
 const uint8_t CMD_CONVERTT = 0x44;
 
-Max31820::Max31820(OneWire &oneWire): oneWire(oneWire) 
+Max31820::Max31820(OneWire &oneWire, PinChangeInterrupt &pci): oneWire(oneWire), _pci(pci)
 { 
     _state = Max31820State::RESET;
+    _pci.MaskRegister = 0x00; // disable pin change interrupts for all pins on port
 }
 
 void Max31820::requestTemperature()

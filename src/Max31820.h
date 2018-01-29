@@ -2,6 +2,7 @@
 #define _MAX31820_H_
 
 #include "OneWire.h"
+#include "PinChangeInterrupt.h"
 
 enum class Max31820State: uint8_t
 {
@@ -14,9 +15,10 @@ class Max31820
 private:
     OneWire &oneWire;
     Max31820State _state;
+    PinChangeInterrupt &_pci;
 
 public:
-    Max31820(OneWire &oneWire);
+    Max31820(OneWire &oneWire, PinChangeInterrupt &pci);
     void requestTemperature();
     Max31820State state();
 };

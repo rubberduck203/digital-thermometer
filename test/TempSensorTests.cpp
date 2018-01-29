@@ -5,6 +5,7 @@
 #include "../src/OneWire.h"
 #include "../src/OneWireImpl.h"
 #include "../src/IOPort.h"
+#include "../src/PinChangeInterrupt.h"
 
 TEST_GROUP(TempSensor)
 {
@@ -50,6 +51,7 @@ public:
 
 TEST(TempSensor, requestTemperature_resets)
 {
+    PinChangeInterrupt pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -59,24 +61,40 @@ TEST(TempSensor, requestTemperature_resets)
 
     mock().ignoreOtherCalls();
 
-    Max31820 tempSensor(oneWire);
+    Max31820 tempSensor(oneWire, pci);
     tempSensor.requestTemperature();
 }
 
 TEST(TempSensor, onCreate_InResetMode)
 {
+    PinChangeInterrupt pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
 
     mock().disable();
 
-    Max31820 tempSensor(oneWire);
+    Max31820 tempSensor(oneWire, pci);
     LONGS_EQUAL(Max31820State::RESET, tempSensor.state())
+}
+
+TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
+{
+    PinChangeInterrupt pci;
+    pci.MaskRegister = 0xFF;
+
+    IOPort_t port;
+    OneWireImpl impl(port, 0);
+    MockOneWire oneWire(impl); 
+
+    Max31820 tempSensor(oneWire, pci);
+
+    BYTES_EQUAL(0x00, pci.MaskRegister);
 }
 
 TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
+    PinChangeInterrupt pci;
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -98,13 +116,15 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 
     mock().ignoreOtherCalls();
 
-    Max31820 tempSensor(oneWire);
+    Max31820 tempSensor(oneWire, pci);
     tempSensor.requestTemperature();
 
     LONGS_EQUAL(Max31820State::WAITING, tempSensor.state());
+
+    FAIL("Need to enable Pin Change Interrupt");
 }
 
 IGNORE_TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
 {
-
+    FAIL("HANDLE ERROR CASE")
 }
