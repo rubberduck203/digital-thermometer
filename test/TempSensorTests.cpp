@@ -63,6 +63,18 @@ TEST(TempSensor, requestTemperature_resets)
     tempSensor.requestTemperature();
 }
 
+TEST(TempSensor, onCreate_InResetMode)
+{
+    IOPort_t port;
+    OneWireImpl impl(port, 0);
+    MockOneWire oneWire(impl);
+
+    mock().disable();
+
+    Max31820 tempSensor(oneWire);
+    LONGS_EQUAL(Max31820State::RESET, tempSensor.state())
+}
+
 TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
     IOPort_t port;
@@ -88,6 +100,8 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 
     Max31820 tempSensor(oneWire);
     tempSensor.requestTemperature();
+
+    LONGS_EQUAL(Max31820State::WAITING, tempSensor.state());
 }
 
 IGNORE_TEST(TempSensor, requestTemperature_whenDeviceNOTFound)

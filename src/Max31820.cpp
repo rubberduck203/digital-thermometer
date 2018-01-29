@@ -3,7 +3,10 @@
 const uint8_t CMD_SKIP_ROM = 0xCC;
 const uint8_t CMD_CONVERTT = 0x44;
 
-Max31820::Max31820(OneWire &oneWire): oneWire(oneWire) { }
+Max31820::Max31820(OneWire &oneWire): oneWire(oneWire) 
+{ 
+    _state = Max31820State::RESET;
+}
 
 void Max31820::requestTemperature()
 {
@@ -13,4 +16,10 @@ void Max31820::requestTemperature()
     oneWire.write(CMD_CONVERTT);
 
     oneWire.issueReadSlot();
+    _state = Max31820State::WAITING;
+}
+
+Max31820State Max31820::state()
+{
+    return _state;
 }

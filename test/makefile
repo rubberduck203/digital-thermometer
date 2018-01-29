@@ -9,7 +9,7 @@ CXXFLAGS += -include CppUTest/MemoryLeakDetectorNewMacros.h
 CFLAGS += -include CppUTest/MemoryLeakDetectorMallocMacros.h
 LD_LIBRARIES = $(shell pkg-config --libs cpputest)
 
-CPPFLAGS += -Wall -Imocks
+CPPFLAGS += -Wall -Imocks -std=c++11
 
 # Build the test executable
 testSource := $(wildcard *.cpp)

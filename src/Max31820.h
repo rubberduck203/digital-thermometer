@@ -3,14 +3,22 @@
 
 #include "OneWire.h"
 
+enum class Max31820State: uint8_t
+{
+     RESET,
+     WAITING,
+};
+
 class Max31820 
 {
 private:
     OneWire &oneWire;
+    Max31820State _state;
 
 public:
     Max31820(OneWire &oneWire);
     void requestTemperature();
+    Max31820State state();
 };
 
 #endif
