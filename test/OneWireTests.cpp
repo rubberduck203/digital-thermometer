@@ -198,6 +198,12 @@ public:
 
         return mock().unsignedIntReturnValue();
     }
+
+    virtual void driveLow()
+    {
+        mock().actualCall("driveLow")
+            .onObject(this);
+    }
 };
 
 TEST(OneWireSpec, write_ObtainsTx)
@@ -259,6 +265,27 @@ TEST(OneWireSpec, write_SendsLeastSignificantBitFirst)
 
     OneWire oneWire(impl);
     oneWire.write(0b01010101);
+
+    mock().checkExpectations();
+}
+
+TEST(OneWireSpec, issueReadSlot) 
+{
+    IOPort_t port;
+    const int pin = 4;
+    ImplMock impl(port, pin);
+
+    mock().expectOneCall("obtainTx")
+        .onObject(&impl);
+    mock().expectOneCall("driveLow")
+        .onObject(&impl);
+    mock().expectOneCall("_delay_us")
+        .withDoubleParameter("__us", 1);
+    mock().expectOneCall("releaseTx")
+        .onObject(&impl);
+
+    OneWire oneWire(impl);
+    oneWire.issueReadSlot();
 
     mock().checkExpectations();
 }

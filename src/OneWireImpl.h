@@ -26,7 +26,7 @@ class OneWireImpl
      * Drive the bus low.
      * Must call obtainTx() first.
      */
-    void driveLow();
+    virtual void driveLow();
 
     /**
      * Drive the bus high.

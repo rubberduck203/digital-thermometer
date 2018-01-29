@@ -125,7 +125,7 @@ int main(void)
             oneWire.write(CMD_CONVERTT);
 
             //todo: create an abstraction for waiting for conversion
-            impl.issueReadSlot();
+            oneWire.issueReadSlot();
             PCMSK2 |= (1 << PCINT23);  // enable pci on PIND7
             reset = false;
         }
