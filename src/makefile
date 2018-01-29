@@ -13,7 +13,7 @@ SRC = ./
 OBJ = obj
 BIN = bin
 
-CPPFLAGS = -Wall -Os -mmcu=$(DEVICE) -DF_CPU=$(F_CPU)
+CPPFLAGS = -Wall -Os -mmcu=$(DEVICE) -DF_CPU=$(F_CPU) -std=c++11
 
 all: $(PROGNAME)
 $(PROGNAME): $(BIN)/$(PROGNAME).hex size

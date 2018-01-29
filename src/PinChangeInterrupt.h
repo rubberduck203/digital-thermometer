@@ -5,10 +5,15 @@
 
 struct PinChangeInterrupt_t
 {
-    volatile uint8_t MaskRegister;
-    volatile uint8_t ControlRegister;
-    int ControlRegisterEnableIndex; 
-    int Pin;
+    volatile uint8_t& ControlRegister;
+    const int ControlRegisterEnableIndex; 
+    volatile uint8_t& MaskRegister;
+    const int Pin;
+
+    PinChangeInterrupt_t(volatile uint8_t& ctlReg, int ctlRegEnableIdx, volatile uint8_t& pinMaskReg, int pin)
+        : ControlRegister(ctlReg), ControlRegisterEnableIndex(ctlRegEnableIdx), MaskRegister(pinMaskReg), Pin(pin)
+    {}
+    //todo: maybe this should have some methods like "isEnabled", "enable()", "disable()", etc.
 };
 
 #endif

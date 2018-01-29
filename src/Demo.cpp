@@ -5,6 +5,8 @@
 #include <avr/interrupt.h>
 #include "OneWireImpl.h"
 #include "OneWire.h"
+#include "Max31820.h"
+#include "PinChangeInterrupt.h"
 
 // /* Shift Register Driver Demo 1 */
 // int main(void) 
@@ -95,6 +97,10 @@ IOPort_t* oneWirePort = (IOPort_t*)&PIND;
 OneWireImpl impl(*oneWirePort, PIND7);
 OneWire oneWire(impl);
 
+PinChangeInterrupt_t pci(PCICR, PCIE2, PCMSK2, PCINT23);
+
+Max31820 tempSensor(oneWire, pci);
+
 ISR(PCINT2_vect)
 {
     /* 
@@ -110,23 +116,16 @@ int main(void)
     const uint8_t CMD_CONVERTT = 0x44;
     const uint8_t CMD_READ_SCRATCHPAD = 0xBE;
 
-    PCMSK2 = 0x0;               // disable PinChange interrupts for all pins on Bus 2
-    PCICR |= (1 << PCIE2);      // enable PCI2
     sei();                      // enable global interrupt
 
     bool reset = true;
     for(;;)
     {
         if (reset) {
-            oneWire.reset();
-            bool deviceFound = oneWire.devicePresent();
-
-            oneWire.write(CMD_SKIP_ROM);
-            oneWire.write(CMD_CONVERTT);
-
-            //todo: create an abstraction for waiting for conversion
-            oneWire.issueReadSlot();
-            PCMSK2 |= (1 << PCINT23);  // enable pci on PIND7
+            tempSensor.requestTemperature();
+            //if (Max31820State::WAITING == tempSensor.state())
+            //    reset = false;
+            
             reset = false;
         }
 

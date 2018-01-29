@@ -51,7 +51,10 @@ public:
 
 TEST(TempSensor, requestTemperature_resets)
 {
-    PinChangeInterrupt_t pci;
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
+
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -67,7 +70,10 @@ TEST(TempSensor, requestTemperature_resets)
 
 TEST(TempSensor, onCreate_InResetMode)
 {
-    PinChangeInterrupt_t pci;
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
+
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -80,7 +86,10 @@ TEST(TempSensor, onCreate_InResetMode)
 
 TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
 {
-    PinChangeInterrupt_t pci;
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
+
     pci.MaskRegister = 0xFF;
 
     IOPort_t port;
@@ -94,9 +103,10 @@ TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
 
 TEST(TempSensor, onCreate_InterruptPortIsEnabled)
 {
-    PinChangeInterrupt_t pci;
-    pci.ControlRegister = 0x01; //some other thing has cr1 enabled
-    pci.ControlRegisterEnableIndex = 1;
+    uint8_t ctlReg = 0x01; //some other thing has cr1 enabled
+    int ctlRegEnableIdx = 1;
+    uint8_t pinMaskReg = 0;
+    PinChangeInterrupt_t pci(ctlReg, ctlRegEnableIdx, pinMaskReg, 0);
 
     IOPort_t port;
     OneWireImpl impl(port, 0);
@@ -109,7 +119,11 @@ TEST(TempSensor, onCreate_InterruptPortIsEnabled)
 
 TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
-    PinChangeInterrupt_t pci;
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    int interruptPin = 3;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
+
     IOPort_t port;
     OneWireImpl impl(port, 0);
     MockOneWire oneWire(impl);
@@ -131,7 +145,7 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 
     mock().ignoreOtherCalls();
 
-    pci.Pin = 3;
+
     Max31820 tempSensor(oneWire, pci);
     tempSensor.requestTemperature();
 
