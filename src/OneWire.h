@@ -21,7 +21,7 @@ class OneWire
     /**
      * Sends a reset pulse.
      */ 
-    void reset(void);
+    virtual void reset(void);
 
     /**
      * After a Reset, 
