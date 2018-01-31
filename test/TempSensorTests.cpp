@@ -7,14 +7,7 @@
 #include "../src/IOPort.h"
 #include "../src/PinChangeInterrupt.h"
 
-TEST_GROUP(TempSensor)
-{
-    void teardown()
-    {
-        mock().checkExpectations();
-        mock().clear();
-    }
-};
+namespace TempSensorSpec {
 
 class MockOneWire: public OneWire
 {
@@ -46,7 +39,24 @@ public:
         mock().actualCall("issueReadSlot")
             .onObject(this);
     }
+};
 
+IOPort_t port;
+OneWireImpl impl(port, 0);
+MockOneWire oneWire(impl);
+
+TEST_GROUP(TempSensor)
+{
+    void setup()
+    {
+
+    }
+
+    void teardown()
+    {
+        mock().checkExpectations();
+        mock().clear();
+    }
 };
 
 TEST(TempSensor, requestTemperature_resets)
@@ -54,10 +64,6 @@ TEST(TempSensor, requestTemperature_resets)
     uint8_t ctlReg = 0;
     uint8_t pinMaskReg = 0;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
-
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl);
 
     mock().expectOneCall("reset")
         .onObject(&oneWire);
@@ -74,10 +80,6 @@ TEST(TempSensor, onCreate_InResetMode)
     uint8_t pinMaskReg = 0;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
 
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl);
-
     mock().disable();
 
     Max31820 tempSensor(oneWire, pci);
@@ -89,12 +91,7 @@ TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
     uint8_t ctlReg = 0;
     uint8_t pinMaskReg = 0;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, 0);
-
     pci.MaskRegister = 0xFF;
-
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl); 
 
     Max31820 tempSensor(oneWire, pci);
 
@@ -108,10 +105,6 @@ TEST(TempSensor, onCreate_InterruptPortIsEnabled)
     uint8_t pinMaskReg = 0;
     PinChangeInterrupt_t pci(ctlReg, ctlRegEnableIdx, pinMaskReg, 0);
 
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl); 
-
     Max31820 tempSensor(oneWire, pci);
 
     BYTES_EQUAL(0x03, pci.ControlRegister); // we've enabled our pci w/out messing with anyone else
@@ -123,10 +116,6 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
     uint8_t pinMaskReg = 0;
     int interruptPin = 3;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
-
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl);
 
     mock().expectOneCall("devicePresent")
         .onObject(&oneWire)
@@ -159,10 +148,6 @@ TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
     int interruptPin = 3;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
 
-    IOPort_t port;
-    OneWireImpl impl(port, 0);
-    MockOneWire oneWire(impl);
-
     mock().expectOneCall("devicePresent")
         .onObject(&oneWire)
         .andReturnValue(false);
@@ -180,7 +165,16 @@ TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
     BYTES_EQUAL(0x00, pci.MaskRegister); //all interrupt pins are still disabled
 }
 
-IGNORE_TEST(TempSensor, readTemp)
+IGNORE_TEST(TempSensor, readTemp_deviceFound)
 {
+    // interrupt pin disabled
+    // reset 
+    // device found == true
+    // skip rom
+    // read scratchpad
+    // verify 9 byte buffer read
+    // state = reset
     FAIL("NEEDS IMPLEMENTED");
 }
+
+} //namespace

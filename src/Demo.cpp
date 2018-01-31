@@ -125,7 +125,6 @@ int main(void)
             tempSensor.requestTemperature();
             //if (Max31820State::WAITING == tempSensor.state())
             //    reset = false;
-            
             reset = false;
         }
 
