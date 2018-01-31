@@ -47,11 +47,6 @@ MockOneWire oneWire(impl);
 
 TEST_GROUP(TempSensor)
 {
-    void setup()
-    {
-
-    }
-
     void teardown()
     {
         mock().checkExpectations();
@@ -101,7 +96,7 @@ TEST(TempSensor, onCreate_InterruptMaskRegisterIsCleared)
 TEST(TempSensor, onCreate_InterruptPortIsEnabled)
 {
     uint8_t ctlReg = 0x01; //some other thing has cr1 enabled
-    int ctlRegEnableIdx = 1;
+    const int ctlRegEnableIdx = 1;
     uint8_t pinMaskReg = 0;
     PinChangeInterrupt_t pci(ctlReg, ctlRegEnableIdx, pinMaskReg, 0);
 
@@ -114,7 +109,7 @@ TEST(TempSensor, requestTemperature_whenDeviceFound)
 {
     uint8_t ctlReg = 0;
     uint8_t pinMaskReg = 0;
-    int interruptPin = 3;
+    const int interruptPin = 3;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
 
     mock().expectOneCall("devicePresent")
@@ -145,7 +140,7 @@ TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
 {
     uint8_t ctlReg = 0;
     uint8_t pinMaskReg = 0;
-    int interruptPin = 3;
+    const int interruptPin = 3;
     PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
 
     mock().expectOneCall("devicePresent")
@@ -167,6 +162,11 @@ TEST(TempSensor, requestTemperature_whenDeviceNOTFound)
 
 IGNORE_TEST(TempSensor, readTemp_deviceFound)
 {
+    uint8_t ctlReg = 0;
+    uint8_t pinMaskReg = 0;
+    const int interruptPin = 3;
+    PinChangeInterrupt_t pci(ctlReg, 0, pinMaskReg, interruptPin);
+
     // interrupt pin disabled
     // reset 
     // device found == true
