@@ -16,29 +16,30 @@ class OneWire
 
     void releaseTx(void);
     void obtainTx(void);
-    void issueReadSlot(void);
+    
+    virtual void issueReadSlot(void);
 
     /**
      * Sends a reset pulse.
      */ 
-    void reset(void);
+    virtual void reset(void);
 
     /**
      * After a Reset, 
      * call this to check for a device on the bus.
      * Returns true if found, otherwise false. 
      */
-    bool devicePresent(void);
+    virtual bool devicePresent(void);
 
     /**
      * Writes one byte to the bus LSB first.
      */
-    void write(uint8_t data);
+    virtual void write(uint8_t data);
 
     /***
      * Reads one byte.
      */
-    uint8_t read();
+    virtual uint8_t read();
 };
 
 #endif
