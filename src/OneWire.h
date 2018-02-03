@@ -39,7 +39,7 @@ class OneWire
     /***
      * Reads one byte.
      */
-    uint8_t read();
+    virtual uint8_t read();
 };
 
 #endif
