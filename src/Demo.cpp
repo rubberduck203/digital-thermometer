@@ -103,19 +103,31 @@ void display(uint16_t temp)
     uint16_t rounded = (1 << (scalingFactor - 1)) + temp; //add 0.5
     int8_t decimal = (rounded >> scalingFactor);          //Truncate fractional (div by 2^4)
 
+    sevenSeg.write(-1);
+    sevenSeg.display();
+    _delay_ms(300);
+
     int8_t tens = decimal / 10; 
     sevenSeg.write(tens + asciiNumberOffset);
     sevenSeg.display();
     _delay_ms(1000);
+
+    sevenSeg.write(-1);
+    sevenSeg.display();
+    _delay_ms(300);
 
     int8_t ones = decimal % 10;
     sevenSeg.write(ones + asciiNumberOffset);
     sevenSeg.display();
     _delay_ms(1000);
 
+    sevenSeg.write(-1);
+    sevenSeg.display();
+    _delay_ms(300);
+
     sevenSeg.write('C');
     sevenSeg.display();
-    _delay_ms(1000);
+    _delay_ms(1200);
 }
 
 int main(void) 
