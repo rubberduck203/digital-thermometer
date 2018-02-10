@@ -19,9 +19,8 @@ clean:
 	$(MAKE) -C src $@
 	$(MAKE) -C test $@
 
-.PHONY: install
-install: upload
+install:
+	$(MAKE) -C src $@
 
-.PHONY: upload
-upload:
-	avrdude -C/usr/local/etc/avrdude.conf -v -patmega328p -carduino -P/dev/cu.usbserial-DN01JMER -b115200 -D -Uflash:w:src/bin/Demo.hex:i 
+### Make predefined variable cheatsheet
+# $@ - target

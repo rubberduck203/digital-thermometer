@@ -6,6 +6,13 @@ DEVICE ?= atmega328
 # Processor speed (check your datasheet)
 F_CPU ?= 16000000UL
 
+# AvrDude Device Name is often slightly different from gcc device name
+DUDE_DEVICE ?= atmega328p
+PROGRAMMER ?= arduino
+BAUD ?= 115200
+#Be sure to set default serial port in ~/.avrduderc
+# default_serial = "/dev/cu.usbserial-ID";
+
 ### Shouldn't need to modify below this line ###
 CC = avr-gcc
 CXX = avr-g++
@@ -36,3 +43,11 @@ $(BIN)/%.elf: $(objects)
 .PHONY: size
 size:
 	avr-size --format=avr --mcu=$(DEVICE) $(BIN)/$(PROGNAME).elf
+
+install: $(BIN)/$(PROGNAME).hex
+	avrdude -v -p$(DUDE_DEVICE) -c$(PROGRAMMER) -b$(BAUD) -D -Uflash:w:$<:i
+
+### Make predefined variable cheatsheet
+# $^ - all prereqs
+# $@ - target
+# $< - first prereq
