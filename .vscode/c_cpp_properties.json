@@ -11,7 +11,8 @@
                 "${workspaceRoot}",
                 "/usr/local/Cellar/avr-gcc@6/6.4.0/avr/include",
                 "/usr/local/Cellar/avr-gcc@6/6.4.0/avr/include/avr",
-                "${workspaceRoot}/test/mocks"
+                "${workspaceRoot}/test/mocks",
+                "${workspaceRoot}/src"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
