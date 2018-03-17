@@ -96,6 +96,7 @@ void SevenSegment::write(uint8_t character)
             data = 0x40;
             break;
         default:
+            for(;;){}
             data = 0x00; // turn the segment off if we get an unsupported char
     }
 
