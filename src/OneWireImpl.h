@@ -37,7 +37,7 @@ class OneWireImpl
     /**
      * Read pin state
      */
-    uint8_t readPin();
+    virtual uint8_t readPin();
     
     /**
      * Releases the bus so slaves can send data.

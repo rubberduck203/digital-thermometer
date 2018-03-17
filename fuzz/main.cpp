@@ -7,13 +7,23 @@
 
 #include "../src/SevenSegmentDisplay.h"
 #include "../src/Max31820.h"
+#include "FakeOneWireImpl.h"
 
 int main() {
     int oneWirePin;
     std::cin >> std::hex >> oneWirePin;
 
+    int data;
+    std::cin >> data;
+
+    uint16_t input;
+    std::cin >> std::hex >> input;
+
+    int scaleIn;
+    std::cin >> scaleIn;
+
     IOPort_t oneWirePort{};
-    OneWireImpl impl(oneWirePort, oneWirePin);
+    FakeOneWireImpl impl(oneWirePort, oneWirePin, data);
     OneWire oneWire(impl);
 
     volatile uint8_t reg = oneWirePin;
@@ -26,12 +36,6 @@ int main() {
     SevenSegment sevenSeg(shiftRegister);
     SevenSegmentDisplay display(sevenSeg);
 
-    uint16_t input;
-    std::cin >> std::hex >> input;
-    //std::cout << std::hex << input << std::endl;
-
-    int scaleIn;
-    std::cin >> scaleIn;
     SevenSegmentDisplay::Scale scale = scaleIn ? SevenSegmentDisplay::Farenheit : SevenSegmentDisplay::Celcius;
 
     tempSensor.state();
