@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <sstream>
 
 #include "../src/SevenSegmentDisplay.h"
 
@@ -16,7 +17,11 @@ int main() {
     uint16_t input;
     std::cin >> std::hex >> input;
     //std::cout << std::hex << input << std::endl;
-    display.write(input, SevenSegmentDisplay::Scale::Celcius);
+
+    int scaleIn;
+    std::cin >> scaleIn;
+    SevenSegmentDisplay::Scale scale = scaleIn ? SevenSegmentDisplay::Farenheit : SevenSegmentDisplay::Celcius;
+    display.write(input, scale);
 
     return 0;
 }
