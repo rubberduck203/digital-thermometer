@@ -5,7 +5,7 @@ TEST = ../test
 OBJ = obj
 BIN = bin
 
-CPPFLAGS += -Wall -I../test/mocks -std=c++11
+CPPFLAGS += -Wall -I../test/mocks -std=c++14
 
 # Build the test executable
 testSource := $(wildcard *.cpp)

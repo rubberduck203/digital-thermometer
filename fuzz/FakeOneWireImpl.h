@@ -13,7 +13,7 @@ private:
     int data;
     int index = 0;
 public:
-    FakeOneWireImpl(IOPort_t &port, const int pin, int data);
+    FakeOneWireImpl(IOPort_t &port, const int pin, long data);
     virtual uint8_t readPin() override;
 };
 

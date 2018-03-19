@@ -1,6 +1,6 @@
 #include "FakeOneWireImpl.h"
 
-FakeOneWireImpl::FakeOneWireImpl(IOPort_t &port, const int pin, const int data)
+FakeOneWireImpl::FakeOneWireImpl(IOPort_t &port, const int pin, const long data)
     : OneWireImpl(port, pin), data(data)
 { }
 

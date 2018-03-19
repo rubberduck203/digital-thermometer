@@ -19,5 +19,4 @@ These correspond to:
    - Should probably be split up into individual args
  - Data to be read from the one wire pin by FakeOneWireImpl
    - An integer that is treated as a string of bits
- - UInt16 of data to send to the display
  - 0/1 boolean that indicated Celsius or Fahrenheit to be displayed
