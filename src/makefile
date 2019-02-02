@@ -31,7 +31,7 @@ objects := $(patsubst %.cpp, $(OBJ)/%.o, $(objects))
 .PRECIOUS: $(BIN)/%.elf
 $(BIN)/%.elf: $(objects)
 	@mkdir -p $(BIN)
-	$(CC) $(CPPFLAGS) $^ -o $@
+	$(CC) $(CPPFLAGS) -Wl,-Map,$(BIN)/$(PROGNAME).map $^ -o $@
 
 .PHONY: size
 size:
